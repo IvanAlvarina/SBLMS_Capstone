@@ -35,8 +35,8 @@ class LoginController extends Controller
         $user->address        = $request->address ?? null; // Optional fiel
         $user->student_no     = $request->student_no;
         $user->email          = $request->email;
-        $user->role           = 'student';
-        $user->account_status = 'pending';
+        $user->role           = 'Student';
+        $user->account_status = 'Pending';
         $user->save();
 
         return redirect()
@@ -59,7 +59,7 @@ class LoginController extends Controller
         }
 
         // Check if approved
-        if ($user->account_status !== 'approved') {
+        if ($user->account_status !== 'Approved') {
             return back()->with('error', 'Your account is not yet approved.');
         }
 

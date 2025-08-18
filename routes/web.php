@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Login\LoginController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\UserManagement\UserManagementController;
 
 //  Root route - redirect to login
 Route::get('/', function () {
@@ -29,5 +30,14 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
         // Add more dashboard routes here
+    });
+
+Route::group(['prefix' => 'user-management'], function () {
+        Route::get('/', [UserManagementController::class, 'index'])->name('user-management.index');
+        Route::get('/json', [UserManagementController::class, 'getUsers'])->name('user-management.json');
+        Route::get('/json-approval', [UserManagementController::class, 'getUsersForApproval'])->name('user-management.json.approval');
+        Route::get('/pending-approval', [UserManagementController::class, 'forApprovalIndex'])->name('user-management.pending-approval');
+        Route::get('/users/approve/{id}', [UserManagementController::class, 'approveUser'])->name('user-management.approve');
+
     });
 });
