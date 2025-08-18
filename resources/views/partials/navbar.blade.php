@@ -201,8 +201,8 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">{{ auth()->user()->username }}</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-medium d-block">{{ auth()->user()->student_no }}</span>
+                            {{-- <small class="text-muted">Admin</small> --}}
                           </div>
                         </div>
                       </a>
@@ -226,7 +226,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                    <li>
-                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        <form action="{{ route('dashboard.logout') }}" method="POST" style="display: inline;">
                             @csrf
                             <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; width: 100%; text-align: left;">
                                 <i class="ti ti-logout me-2 ti-sm"></i>

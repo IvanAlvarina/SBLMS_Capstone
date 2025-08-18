@@ -100,17 +100,17 @@
                 </div>
             @endif
 
-            <form method="POST" action="#">
+            <form method="POST" action="{{ route('login.authenticate') }}" id="formAuthentication" class="mb-3">
                 @csrf
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="student_no" class="form-label">Student no.</label>
                     <input type="text"
-                           class="form-control @error('username') is-invalid @enderror"
-                           id="username"
-                           name="username"
-                           placeholder="Enter your username"
+                           class="form-control @error('student_no') is-invalid @enderror"
+                           id="student_no"
+                           name="student_no"
+                           placeholder="Enter your student no. eg: 22-0066-927"
                            autofocus required />
-                    @error('username')
+                    @error('student_no')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -148,10 +148,44 @@
 
             <p class="text-center mt-3">
                 <span>New on our platform?</span>
-                <a href="">
+                <a href="{{ route('login.register') }}" class="link fw-semibold">
                     <span>Create an account</span>
                 </a>
             </p>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(function () {
+        console.log('test');
+
+        const studentNoInput = document.getElementById('student_no');
+
+        if (studentNoInput) {
+            studentNoInput.addEventListener('input', function(e) {
+                // keep only numbers
+                let value = e.target.value.replace(/\D/g, '');
+
+                // enforce max length (2+4+3 = 9 digits total)
+                value = value.substring(0, 9);
+
+                let formatted = '';
+
+                if (value.length > 0) {
+                    formatted += value.substring(0, 2); // first 2 digits
+                }
+                if (value.length > 2) {
+                    formatted += '-' + value.substring(2, Math.min(6, value.length)); // next up to 4 digits
+                }
+                if (value.length > 6) {
+                    formatted += '-' + value.substring(6, Math.min(9, value.length)); // last up to 3 digits
+                }
+
+                e.target.value = formatted;
+            });
+        }
+    });
+</script>
+@endpush
