@@ -25,14 +25,16 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
-//  Dashboard routes (protected with auth middleware)
+//  Dashboard & other authenticated routes
 Route::middleware('auth')->group(function () {
+    // Dashboard
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
         // Add more dashboard routes here
     });
 
-Route::group(['prefix' => 'user-management'], function () {
+    // User Management
+    Route::group(['prefix' => 'user-management'], function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('user-management.index');
         Route::get('/json', [UserManagementController::class, 'getUsers'])->name('user-management.json');
         Route::get('/json-approval', [UserManagementController::class, 'getUsersForApproval'])->name('user-management.json.approval');
@@ -44,4 +46,8 @@ Route::group(['prefix' => 'user-management'], function () {
         Route::put('/{id}/update', [UserManagementController::class, 'update'])->name('user-management.update');
         Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
     });
+
+    //  Force password change route (only for logged in Student/Faculty)
+    Route::post('/force-change-password', [LoginController::class, 'forceChangePassword'])
+        ->name('password.forceChange');
 });

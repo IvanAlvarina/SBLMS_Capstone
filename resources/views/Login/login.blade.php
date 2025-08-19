@@ -82,7 +82,7 @@
             <h4 class="mb-1">Welcome to SBLMS👋</h4>
             <p class="mb-4">Please sign-in to your account</p>
 
-            {{-- ✅ Success Notification --}}
+            {{-- Success Notification --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="ti ti-checks me-2"></i>
@@ -103,11 +103,11 @@
             <form method="POST" action="{{ route('login.authenticate') }}" id="formAuthentication" class="mb-3">
                 @csrf
                 <div class="mb-3">
-                    <label for="student_no" class="form-label">Student no.</label>
+                    <label for="username" class="form-label">Student no. / Faculty no.</label>
                     <input type="text"
                            class="form-control @error('student_no') is-invalid @enderror"
-                           id="student_no"
-                           name="student_no"
+                           id="username"
+                           name="username"
                            placeholder="Enter your student no. eg: 22-0066-927"
                            autofocus required />
                     @error('student_no')
@@ -161,31 +161,31 @@
     $(function () {
         console.log('test');
 
-        const studentNoInput = document.getElementById('student_no');
+        // const studentNoInput = document.getElementById('student_no');
 
-        if (studentNoInput) {
-            studentNoInput.addEventListener('input', function(e) {
-                // keep only numbers
-                let value = e.target.value.replace(/\D/g, '');
+        // if (studentNoInput) {
+        //     studentNoInput.addEventListener('input', function(e) {
+        //         // keep only numbers
+        //         let value = e.target.value.replace(/\D/g, '');
 
-                // enforce max length (2+4+3 = 9 digits total)
-                value = value.substring(0, 9);
+        //         // enforce max length (2+4+3 = 9 digits total)
+        //         value = value.substring(0, 9);
 
-                let formatted = '';
+        //         let formatted = '';
 
-                if (value.length > 0) {
-                    formatted += value.substring(0, 2); // first 2 digits
-                }
-                if (value.length > 2) {
-                    formatted += '-' + value.substring(2, Math.min(6, value.length)); // next up to 4 digits
-                }
-                if (value.length > 6) {
-                    formatted += '-' + value.substring(6, Math.min(9, value.length)); // last up to 3 digits
-                }
+        //         if (value.length > 0) {
+        //             formatted += value.substring(0, 2); // first 2 digits
+        //         }
+        //         if (value.length > 2) {
+        //             formatted += '-' + value.substring(2, Math.min(6, value.length)); // next up to 4 digits
+        //         }
+        //         if (value.length > 6) {
+        //             formatted += '-' + value.substring(6, Math.min(9, value.length)); // last up to 3 digits
+        //         }
 
-                e.target.value = formatted;
-            });
-        }
+        //         e.target.value = formatted;
+        //     });
+        // }
     });
 </script>
 @endpush

@@ -10,6 +10,7 @@ use App\Mail\SendStudentCredentialsMail;
 use App\Mail\SendFacultyMemberCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class UserManagementController extends Controller
 {
@@ -172,6 +173,13 @@ class UserManagementController extends Controller
             $user->account_status = 'Approved';
             $user->save();
 
+            // Assign correct Spatie role (based on existing role field)
+            if (strtolower($user->role) === 'student') {
+                $user->syncRoles(['Student']); // remove old roles & assign Student
+            } elseif (strtolower($user->role) === 'faculty') {
+                $user->syncRoles(['Faculty']);
+            }
+
             // Send credentials email
             Mail::to($user->email)->send(new SendStudentCredentialsMail(
                 $user->fullname,
@@ -232,6 +240,9 @@ class UserManagementController extends Controller
 
             // Send welcome email with credentials
             $this->sendFacultyWelcomeEmail($user, $randomPassword);
+
+            // Assign Spatie role
+            $user->assignRole('faculty');
 
             return response()->json([
                 'status' => 'success',
