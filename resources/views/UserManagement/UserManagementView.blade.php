@@ -36,6 +36,7 @@
                         <th>Full Name</th>
                         <th>Role</th>
                         <th>Student no</th>
+                        <th>Faculty no</th>
                         <th>Email</th>
                         <th>Address</th>
                         <th>Status</th>
@@ -69,6 +70,7 @@
                         { data: 'fullname' },
                         { data: 'role' },
                         { data: 'student_no' },
+                        { data: 'faculty_no' },
                         { data: 'email' },
                         { data: 'address' },
                         { data: 'account_status' },
@@ -88,7 +90,7 @@
                             text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add Faculty User</span>',
                             className: 'btn btn-primary waves-effect waves-light',
                             action: function () {
-                                window.location.href = '';
+                                window.location.href = '{{ route("user-management.faculty-creation.index") }}';
                             }
                         }
                     ],
@@ -102,43 +104,44 @@
             }
         });
 
-        // Delete product function
-        // function deleteProduct(deleteUrl) {
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: "You won't be able to revert this!",
-        //         icon: 'warning',
-        //         showCancelButton: false,
-        //         confirmButtonColor: '#d33',
-        //         cancelButtonColor: '#3085d6',
-        //         confirmButtonText: 'Yes, delete it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             fetch(deleteUrl, {
-        //                 method: 'POST',
-        //                 headers: {
-        //                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        //                     'Content-Type': 'application/x-www-form-urlencoded'
-        //                 },
-        //                 body: '_method=DELETE'
-        //             })
-        //             .then(response => {
-        //                 if (!response.ok) {
-        //                     throw new Error(`HTTP error! Status: ${response.status}`);
-        //                 }
-        //                 return response.json();
-        //             })
-        //             .then(data => {
-        //                 Swal.fire('Deleted!', data.message, 'success');
-        //                 $('.datatables-basic').DataTable().ajax.reload(null, false);
-        //             })
-        //             .catch(err => {
-        //                 console.error('Delete error:', err);
-        //                 Swal.fire('Error', 'Something went wrong.', 'error');
-        //             });
-        //         }
-        //     });
-        // }
+    // Delete user function
+    function deleteUser(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(deleteUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: '_method=DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire('Deleted!', data.message, 'success');
+                    $('.datatables-basic').DataTable().ajax.reload(null, false);
+                })
+                .catch(err => {
+                    console.error('Delete error:', err);
+                    Swal.fire('Error', 'Something went wrong.', 'error');
+                });
+            }
+        });
+    }
+
 
 
 

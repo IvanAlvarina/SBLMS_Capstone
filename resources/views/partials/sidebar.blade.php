@@ -42,6 +42,12 @@
             <div data-i18n="List of Approval">List of Approval</div>
           </a>
         </li>
+
+        <li class="menu-item {{ request()->routeIs('user-management.faculty-creation.index') ? 'active' : '' }}">
+          <a href="{{ route('user-management.faculty-creation.index') }}" class="menu-link">
+            <div data-i18n="Faculty">Faculty</div>
+          </a>
+        </li>
       </ul>
     </li>
 

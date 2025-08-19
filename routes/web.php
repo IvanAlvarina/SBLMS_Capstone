@@ -38,6 +38,10 @@ Route::group(['prefix' => 'user-management'], function () {
         Route::get('/json-approval', [UserManagementController::class, 'getUsersForApproval'])->name('user-management.json.approval');
         Route::get('/pending-approval', [UserManagementController::class, 'forApprovalIndex'])->name('user-management.pending-approval');
         Route::get('/users/approve/{id}', [UserManagementController::class, 'approveUser'])->name('user-management.approve');
-
+        Route::get('/faculty-member-creation', [UserManagementController::class, 'facultyMembersCreationIndex'])->name('user-management.faculty-creation.index');
+        Route::post('/faculty-member-creation/store', [UserManagementController::class, 'storeFacultyMember'])->name('user-management.faculty-creation.store');
+        Route::get('/{id}/edit', [UserManagementController::class, 'edit'])->name('user-management.edit');
+        Route::put('/{id}/update', [UserManagementController::class, 'update'])->name('user-management.update');
+        Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
     });
 });

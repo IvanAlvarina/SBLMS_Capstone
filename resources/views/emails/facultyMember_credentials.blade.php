@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login Credentials</title>
+    <title>Faculty Account Created</title>
     <style>
         /* General resets for email clients */
         body {
@@ -44,7 +44,14 @@
         }
         .credentials strong {
             display: inline-block;
-            width: 100px;
+            width: 120px;
+        }
+        .security-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
         }
         .footer {
             margin-top: 30px;
@@ -56,18 +63,33 @@
 </head>
 <body>
     <div class="email-container">
-        <h1>Welcome to SBLMS!</h1>
+        <h1>Welcome to SBLMS Faculty Portal!</h1>
 
-        <p>Hello {{ $fullname }},</p>
+        <p>Dear {{ $fullname }},</p>
 
-        <p>Your account has been approved 🎉. You can now log in using the credentials below:</p>
+        <p>Your faculty account has been successfully created and approved 🎉. You can now access the SBLMS Faculty Portal using the credentials below:</p>
 
         <div class="credentials">
-            <p><strong>Student No:</strong> {{ $student_no }}</p>
+            <p><strong>Faculty No:</strong> {{ $faculty_no }} <em>(use this to login)</em></p>
             <p><strong>Password:</strong> {{ $password }}</p>
         </div>
 
-        <p>Please log in and change your password after your first login for security.</p>
+        <div class="security-note">
+            <p><strong>Important Security Notice:</strong></p>
+            <p>For your account security, please log in and change your password immediately after your first login. Your temporary password should not be shared with anyone.</p>
+        </div>
+
+        <p>As a faculty member, you now have access to:</p>
+        <ul>
+            <li>Course management tools</li>
+            <li>Student information systems</li>
+            <li>Academic resources and materials</li>
+            <li>Faculty communication portal</li>
+        </ul>
+
+        <p>If you have any questions or need assistance with your account, please don't hesitate to contact our support team.</p>
+
+        <p>Welcome to our academic community!</p>
 
         <p>Best regards,<br>SBLMS Administration Team</p>
 
