@@ -6,9 +6,82 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
   <div class="row">
-    {{-- Your dashboard widgets --}}
+    <div class="col-12">
+      <div 
+        class="card text-white border-0 shadow-sm position-relative" 
+        style="background-image: url('{{ asset('storage/assets/wallpaper.jpg') }}'); 
+               background-size: cover; 
+               background-position: center; 
+               height: 400px;
+               border-radius: 1rem; 
+               transform: translateY(-10px) scale(1.02);
+               box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
+        
+        <!-- Dark overlay -->
+        <div class="position-absolute top-0 start-0 w-100 h-100" 
+             style="background: rgba(0,0,0,0.5); border-radius: 0.5rem;">
+        </div>
+
+        <!-- Content -->
+        <div class="card-body d-flex flex-column align-items-center justify-content-center text-center position-relative">
+          <h1 class="text-white fw-bold">
+            SBC Online Library Management System
+          </h1>
+          <h3 class="text-white mt-3">
+           Your gateway to knowledge
+          </h3>
+        </div>
+
+
+      </div>
+
+      <div class="mt-4 mb-4 text-center">
+        <div class="card-header">
+          <h2 class="mb-3">Welcome to your Online Library!</h2>
+        </div>
+        <div class="card-body">
+          <p class="mb-0">You will be able to read books of different topics and age-appropriateness through this shared site.</p>
+       </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="row align-items-center">
+          
+          <!-- Logo on the left -->
+          <div class="col-md-4 text-center mb-4 mb-md-0">
+            <img src="{{ asset('storage/assets/logo.jpg') }}" alt="SBC Logo" 
+                class="img-fluid" style="max-height: 200px; border-radius: 0.5rem;">
+          </div>
+
+          <!-- History on the right -->
+          <div class="col-md-8">
+            <h2 class="fw-bold mb-3 text-white">History</h2>
+            <p class="text-white">
+              St. Bridget College (SBC), founded in 1947 by the Religious of the Good Shepherd (RGS), 
+              is a private Catholic institution located in Batangas City, Philippines. 
+              It was established to provide quality education and formation grounded in Christian values. 
+              Throughout the years, SBC has built a legacy of academic excellence and social responsibility, 
+              offering various educational programs from elementary to tertiary levels.
+            </p>
+            <p class="text-white">
+              The institution aims to nurture the holistic development of its students by fostering a learning environment 
+              that encourages intellectual, emotional, and spiritual growth. SBC takes pride in its rich history, 
+              values-based education, and commitment to community service.
+            </p>
+            <p class="text-white mb-0">
+              Today, SBC continues to serve the youth of Batangas and surrounding areas, 
+              providing them with the tools to succeed in their academic, professional, and personal lives.
+            </p>
+          </div>
+          
+        </div>
+      </div>
+
+
+    </div>
   </div>
 </div>
+
 
 {{-- Force Password Change Modal --}}
 @if(session('force_password_change') && (auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty')))
