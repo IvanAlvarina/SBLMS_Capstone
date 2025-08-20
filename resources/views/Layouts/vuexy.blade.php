@@ -150,6 +150,5 @@
     
     <!-- Page Scripts Stack -->
     @stack('page-scripts')
-
 </body>
 </html>

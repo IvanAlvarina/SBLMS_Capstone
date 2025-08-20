@@ -64,4 +64,7 @@
 </script>
 @endif
 
+
+@include('partials.chatbot')
+
 @endsection

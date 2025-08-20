@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Login\LoginController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\UserManagement\UserManagementController;
+use App\Http\Controllers\Chatbot\ChatbotController;
 
 //  Root route - redirect to login
 Route::get('/', function () {
@@ -50,4 +51,9 @@ Route::middleware('auth')->group(function () {
     //  Force password change route (only for logged in Student/Faculty)
     Route::post('/force-change-password', [LoginController::class, 'forceChangePassword'])
         ->name('password.forceChange');
+
+    Route::group(['prefix' => 'chatbot'], function () {
+        Route::get('/chat/start', [ChatbotController::class, 'start'])->name('chatbot.start');
+        Route::post('/chat/next', [ChatbotController::class, 'next'])->name('chatbot.next');
+    });
 });
