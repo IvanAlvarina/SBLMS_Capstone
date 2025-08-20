@@ -1,0 +1,121 @@
+@extends('Layouts.vuexy')
+
+@section('title', 'Edit Book')
+
+@section('content')
+<div class="card">
+    <div class="card-body">
+
+    <div class="card-body">
+
+    @php
+    $genres = [
+        'Fiction',
+        'Non-Fiction',
+        'Science Fiction',
+        'Fantasy',
+        'Biography',
+        'History',
+        'Mystery',
+        'Romance',
+        'Thriller',
+        'Self-Help',
+        'Children',
+        'Technology',
+        'Other'
+    ];
+    @endphp
+
+    <form id="edit-book-form" action="{{ route('books-management.update', $book->book_id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="book_title" class="form-label">Title</label>
+                <input type="text" name="book_title" class="form-control" value="{{ old('book_title', $book->book_title) }}">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="book_author" class="form-label">Author</label>
+                <input type="text" name="book_author" class="form-control" value="{{ old('book_author', $book->book_author) }}">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="book_genre" class="form-label">Genre</label>
+                <select name="book_genre" class="form-control">
+                <option value="">Select Genre</option>
+                @foreach($genres as $genre)
+                    <option value="{{ $genre }}" {{ old('book_genre', $book->book_genre) == $genre ? 'selected' : '' }}>
+                        {{ $genre }}
+                    </option>
+                @endforeach
+                </select>
+            </div>
+
+
+            <div class="mb-3 col-md-6">
+                <label for="book_yearpub" class="form-label">Date Published</label>
+                <input type="date" name="book_yearpub" class="form-control" value="{{ old('book_yearpub', \Carbon\Carbon::parse($book->book_yearpub)->format('Y-m-d')) }}">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="book_isbn" class="form-label">ISBN</label>
+                <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn', $book->book_isbn) }}" maxlength='13' pattern="\d{10}(\d{3})?" title="ISBN must be exactly 10 or 13 digits">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label for="book_status" class="form-label">Status</label>
+                <select name="book_status" class="form-control">
+                    <option value="Available" {{ $book->book_status == 'Available' ? 'selected' : '' }}>Available</option>
+                    <option value="Borrowed" {{ $book->book_status == 'Borrowed' ? 'selected' : '' }}>Borrowed</option>
+                    <option value="Reserved" {{ $book->book_status == 'Reserved' ? 'selected' : '' }}>Reserved</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Book</button>
+    </form>
+</div>
+
+
+@push('page-scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('edit-book-form').addEventListener('submit', function(e) {
+    e.preventDefault();  // prevent immediate form submit
+    
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to save changes to this book?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!',
+        cancelButtonText: 'No, cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.submit(); // submit form if confirmed
+        } else {
+            Swal.fire('Cancelled', 'No changes were saved.', 'info');
+        }
+    });
+});
+</script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        timer: 2500,
+        showConfirmButton: false,
+    });
+</script>
+@endif
+
+@endpush
+@endsection
