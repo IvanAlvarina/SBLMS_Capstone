@@ -50,22 +50,6 @@
         </li>
       </ul>
     </li>
-
-    {{-- Books Management --}}
-    <li class="menu-item {{ request()->is('books-management*') ? 'active open' : '' }}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-       <i class="menu-icon tf-icons ti ti-book"></i>
-        <div data-i18n="Books Management">Books Management</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('books-management.index') ? 'active' : '' }}">
-          <a href="{{ route('books-management.index') }}" class="menu-link">
-            <div data-i18n="Books List">Books List</div>
-          </a>
-        </li>
-
-       
-
     @endrole
 
   </ul>
