@@ -9,7 +9,6 @@
             @csrf
 
             <div class="row">
-
                 <div class="mb-3 col-md-6">
                     <label for="book_title" class="form-label">Title</label>
                     <input type="text" name="book_title" class="form-control" value="{{ old('book_title') }}" required>
@@ -22,7 +21,7 @@
 
                 <div class="mb-3 col-md-6">
                     <label for="book_genre" class="form-label">Genre</label>
-                    <input type="text" name="book_genre" class="form-control" value="{{ old('book_genre') }}" required>
+                    @include('partials.genre-dropdown')
                 </div>
 
                 <div class="mb-3 col-md-6">
@@ -31,18 +30,17 @@
                 </div>
 
                 <div class="mb-3 col-md-6">
-                <label for="book_isbn" class="form-label">ISBN</label>
-                <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="13" pattern="\d{10}(\d{3})?" inputmode="numeric" title="ISBN must be exactly 13 digits" required>
+                    <label for="book_isbn" class="form-label">ISBN</label>
+                    <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="13" pattern="\d{10}(\d{3})?" inputmode="numeric" title="ISBN must be exactly 13 digits" required>
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label for="book_status" class="form-label">Status</label>
                     <select class="form-control" disabled>
-                    <option value="Available" selected>Available</option>
+                        <option value="Available" selected>Available</option>
                     </select>
                     <input type="hidden" name="book_status" value="Available">
                 </div>
-
 
                 <div class="mb-3 col-md-6">
                     <label for="book_cimage" class="form-label">Book Cover Image (Optional)</label>
@@ -54,31 +52,23 @@
         </form>
     </div>
 </div>
+@endsection
 
 @push('page-scripts')
-
-
 <style>
-    .input-error {
-        border: 2px solid red !important;
-        box-shadow: 0 0 5px red !important;
-    }
-
-    .input-valid {
-        border: 2px solid green !important;
-        box-shadow: 0 0 5px green !important;
-    }
+.input-error {
+    border: 2px solid red !important;
+    box-shadow: 0 0 5px red !important;
+}
+.input-valid {
+    border: 2px solid green !important;
+    box-shadow: 0 0 5px green !important;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Generate a temporary Book ID, e.g., "BOOK" + timestamp
-    let tempBookId = 'BOOK' + Date.now();
-    document.getElementById('book_id').value = tempBookId;
-});
-
 document.getElementById('add-book-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -97,51 +87,42 @@ document.getElementById('add-book-form').addEventListener('submit', function(e) 
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('add-book-form');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+
+    function validateInput(input) {
+        if (input.value.trim() === '') {
+            input.classList.add('input-error');
+            input.classList.remove('input-valid');
+        } else {
+            input.classList.add('input-valid');
+            input.classList.remove('input-error');
+        }
+    }
+
+    inputs.forEach(input => {
+        validateInput(input);
+        input.addEventListener('input', () => validateInput(input));
+        input.addEventListener('change', () => validateInput(input));
+    });
+
+    form.addEventListener('submit', function () {
+        inputs.forEach(input => validateInput(input));
+    });
+});
 </script>
 
 @if(session('success'))
 <script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: '{{ session('success') }}',
-        timer: 2500,
-        showConfirmButton: false,
-    });
+Swal.fire({
+    icon: 'success',
+    title: 'Success!',
+    text: '{{ session('success') }}',
+    timer: 2500,
+    showConfirmButton: false,
+});
 </script>
 @endif
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('add-book-form');
-        const inputs = form.querySelectorAll('input[required], select[required]');
-
-        // Function to validate and apply classes
-        function validateInput(input) {
-            if (input.value.trim() === '') {
-                input.classList.add('input-error');
-                input.classList.remove('input-valid');
-            } else {
-                input.classList.add('input-valid');
-                input.classList.remove('input-error');
-            }
-        }
-
-        // Validate on input and change
-        inputs.forEach(input => {
-            validateInput(input); // initial check
-            input.addEventListener('input', () => validateInput(input));
-            input.addEventListener('change', () => validateInput(input));
-        });
-
-        // Re-validate on submit to ensure visual cues
-        form.addEventListener('submit', function (e) {
-            inputs.forEach(input => validateInput(input));
-        });
-    });
-</script>
-
-
 @endpush
-@endsection

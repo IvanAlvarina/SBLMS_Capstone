@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/books-data', [DashboardController::class, 'getBooksData']);
         // Add more dashboard routes here
     });
 
