@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class BooksList extends Authenticatable
 {
-    protected $table = 'books_list';
+    protected $table = 'books_lists';
 
     protected $primaryKey = 'book_id';
     public $incrementing = false;
@@ -26,13 +26,3 @@ class BooksList extends Authenticatable
         'book_dateadded',
     ];
 }
-
-
-
-
-
-
-
-
-
-

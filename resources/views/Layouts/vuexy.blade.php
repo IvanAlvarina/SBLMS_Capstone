@@ -14,6 +14,10 @@
     <meta name="description" content="@yield('meta_description', '')" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Tesseract -->
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 

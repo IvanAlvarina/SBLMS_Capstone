@@ -12,7 +12,6 @@
 @endif
 
 @push('page-styles')
-<!-- DataTables and Buttons CSS -->
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
@@ -30,8 +29,7 @@
                 <th>Book ISBN</th>
                 <th>Book Status</th>
                 <th>Book Cover Image</th>
-                <th>Date Added into Library</th>
-                <th>Action</th>
+                <th>Action</th> <!-- ✅ Removed Date Added -->
             </tr>
         </thead>
     </table>
@@ -40,7 +38,6 @@
 @endsection
 
 @push('page-scripts')
-<!-- DataTables and Buttons JS -->
 <script src="{{ asset('assets/vendor/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
@@ -53,21 +50,16 @@
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 
 <script>
-// Function to format ISBN (ISBN-10 or ISBN-13)
 function formatISBN(isbn) {
-    if (!isbn) return ''; // Return empty string if no ISBN
-
-    // Remove any existing hyphens or spaces
+    if (!isbn) return '';
     let digits = isbn.replace(/[-\s]/g, '');
 
     if (digits.length === 10) {
-        // Format ISBN-10: 1-234-56789-X
         return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
     } else if (digits.length === 13) {
-        // Format ISBN-13: 978-1-23-456789-0
         return digits.replace(/(\d{3})(\d{1})(\d{2})(\d{6})(\d{1})/, '$1-$2-$3-$4-$5');
     } else {
-        return isbn; // Return raw if length is not 10 or 13
+        return isbn;
     }
 }
 
@@ -96,7 +88,7 @@ $(function () {
                 { 
                     data: 'book_isbn', 
                     render: function(data, type, row) {
-                        return formatISBN(data); // Format ISBN in table
+                        return formatISBN(data);
                     }
                 },
                 { data: 'book_status' },
@@ -111,7 +103,36 @@ $(function () {
                         }
                     }
                 },
-                { data: 'book_dateadded' },
+                {   // ✅ Action Dropdown only
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return `
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light dropdown-toggle" 
+                                        type="button" 
+                                        id="dropdownMenuButton${row.book_id}" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-expanded="false">
+                                    <i class="ti ti-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton${row.book_id}">
+                                    <li>
+                                        <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
+                                            <i class="ti ti-edit me-1"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
+                                            <i class="ti ti-trash me-1"></i> Delete
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        `;
+                    }
+                }
             ],
             dom: '<"card-header flex-column flex-md-row align-items-center"<"head-label text-center"><"dt-filter-status me-auto"><"dt-action-buttons text-end"B>>' +
                 '<"row"<"col-sm-14 col-md-6"l><"col-sm-14 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
@@ -128,7 +149,7 @@ $(function () {
                             text: 'Export to Excel',
                             title: 'Books List',
                             exportOptions: {
-                                columns: ':visible' // Export all visible columns
+                                columns: ':visible'
                             }
                         },
                         {
@@ -136,7 +157,7 @@ $(function () {
                             className: 'btn btn-danger',
                             text: 'Export to PDF',
                             title: 'Books List',
-                            orientation: 'landscape', // You can customize orientation here
+                            orientation: 'landscape',
                             pageSize: 'A4',
                             exportOptions: {
                                 columns: ':visible'
@@ -172,6 +193,7 @@ $(function () {
             pageLength: 10
         });
 
+        // Status filter
         $('div.dt-filter-status').html(` 
             <label for="status-filter" class="me-2 mb-0" style="line-height: 38px;">Filter by Status:</label>
             <select id="status-filter" class="form-select form-select-sm" style="width: 180px; display: inline-block;">
@@ -187,7 +209,7 @@ $(function () {
     }
 });
 
-// Delete (soft delete) with SweetAlert
+// Delete (soft delete)
 $(document).on('click', '.delete-btn', function () {
     let bookId = $(this).data('id');
 
@@ -240,5 +262,4 @@ $(document).on('click', '.delete-btn', function () {
     });
 });
 </script>
-
 @endpush
