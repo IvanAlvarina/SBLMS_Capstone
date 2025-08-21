@@ -33,7 +33,7 @@
 
                     <div class="mb-3">
                         <label for="book_isbn" class="form-label">ISBN</label>
-                        <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="13" pattern="\d{10}(\d{3})?" title="ISBN must be exactly 10 or 13 digits">
+                        <input type="text" name="book_isbn" id="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="17" pattern="(?:\d{3}-)?\d{1,5}-\d{1,7}-\d{1,7}-[\dX]{1}" title="ISBN must be either 10 or 13 digits, with optional hyphens">
                     </div>
 
                     <div class="mb-3">
@@ -73,6 +73,29 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+// Function to format ISBN (ISBN-10 or ISBN-13 with hyphens)
+function formatISBN(isbn) {
+    if (!isbn) return ''; // Return empty string if no ISBN
+
+    // Remove any existing hyphens or spaces
+    let digits = isbn.replace(/[-\s]/g, '');
+
+    if (digits.length === 10) {
+        // Format ISBN-10: 1-234-56789-X
+        return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
+    } else if (digits.length === 13) {
+        // Format ISBN-13: 978-1-23-456789-0
+        return digits.replace(/(\d{3})(\d{1})(\d{2})(\d{6})(\d{1})/, '$1-$2-$3-$4-$5');
+    } else {
+        return isbn; // Return raw if length is not 10 or 13
+    }
+}
+
+// Listen for input changes on the ISBN field to format the ISBN
+document.getElementById('book_isbn').addEventListener('input', function() {
+    this.value = formatISBN(this.value);
+});
+
 document.getElementById('create-book-form').addEventListener('submit', function(e) {
     e.preventDefault();  
     Swal.fire({

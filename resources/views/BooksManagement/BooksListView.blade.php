@@ -40,6 +40,24 @@
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 
 <script>
+// Function to format ISBN (ISBN-10 or ISBN-13)
+function formatISBN(isbn) {
+    if (!isbn) return ''; // Return empty string if no ISBN
+
+    // Remove any existing hyphens or spaces
+    let digits = isbn.replace(/[-\s]/g, '');
+
+    if (digits.length === 10) {
+        // Format ISBN-10: 1-234-56789-X
+        return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
+    } else if (digits.length === 13) {
+        // Format ISBN-13: 978-1-23-456789-0
+        return digits.replace(/(\d{3})(\d{1})(\d{2})(\d{6})(\d{1})/, '$1-$2-$3-$4-$5');
+    } else {
+        return isbn; // Return raw if length is not 10 or 13
+    }
+}
+
 $(function () {
     var dt_basic_table = $('.datatables-basic');
 
@@ -62,7 +80,12 @@ $(function () {
                 { data: 'book_author' },
                 { data: 'book_genre' },
                 { data: 'book_yearpub' },
-                { data: 'book_isbn' },
+                { 
+                    data: 'book_isbn', 
+                    render: function(data, type, row) {
+                        return formatISBN(data); // Format ISBN in table
+                    }
+                },
                 { data: 'book_status' },
                 {
                     data: 'book_cimage',
@@ -184,4 +207,5 @@ $(document).on('click', '.delete-btn', function () {
     });
 });
 </script>
+
 @endpush
