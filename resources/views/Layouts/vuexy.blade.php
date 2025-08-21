@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/vuexy.blade.php --}}
 <!DOCTYPE html>
 <html lang="en"
       class="light-style layout-menu-fixed"
@@ -21,18 +20,16 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
 
     <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Core CSS -->
-    {{-- If your pack is LTR, change to vendor/css/core.css instead of /rtl/core.css --}}
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
@@ -40,26 +37,15 @@
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/tagify/tagify.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/tagify/tagify.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 
-    <!-- Quill Editor CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/typography.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/katex.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
-    
-    <!-- Dropzone CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/dropzone/dropzone.css') }}" />
+    <!-- DataTables Export Styles -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-buttons-bs5/buttons.bootstrap5.min.css') }}" />
 
-    <!-- Page CSS (per-view) -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/cards-advance.css') }}" />
     @stack('vendor-styles')
     @stack('page-styles')
 
@@ -72,7 +58,7 @@
 <body>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
+        <div class="layout-container">
 
             {{-- Sidebar (paste Vuexy sidebar HTML inside this partial) --}}
             @includeIf('partials.sidebar')
@@ -89,7 +75,6 @@
                     <!-- Main Content -->
                     <div class="container-xxl flex-grow-1 container-p-y">
                         @yield('content')
-
                     </div>
                     <!-- / Main Content -->
 
@@ -127,15 +112,27 @@
     <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+
+    <!-- DataTables Buttons JS -->
+    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+
     <!-- Quill Editor JS -->
     <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/quill/quill.js') }}"></script>
+
     <!-- Select2 JS -->
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+
     <!-- Dropzone JS -->
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
 
     <script src="{{ asset('assets/vendor/libs/tagify/tagify.js') }}"></script>
+
     <!-- Main JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
@@ -143,12 +140,12 @@
     <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
 
     <script src="{{ asset('assets/js/app-ecommerce-product-add.js') }}"></script>
-      
+
     <script src="{{ asset('assets/js/tables-datatables-basic.js') }}"></script>
 
     <!-- Vendor Scripts Stack -->
     @stack('vendor-scripts')
-    
+
     <!-- Page Scripts Stack -->
     @stack('page-scripts')
 </body>

@@ -12,6 +12,9 @@
 @endif
 
 @push('page-styles')
+<!-- DataTables and Buttons CSS -->
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endpush
 
@@ -37,6 +40,16 @@
 @endsection
 
 @push('page-scripts')
+<!-- DataTables and Buttons JS -->
+<script src="{{ asset('assets/vendor/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 
 <script>
@@ -99,7 +112,6 @@ $(function () {
                     }
                 },
                 { data: 'book_dateadded' },
-                { data: 'action', orderable: false, searchable: false }
             ],
             dom: '<"card-header flex-column flex-md-row align-items-center"<"head-label text-center"><"dt-filter-status me-auto"><"dt-action-buttons text-end"B>>' +
                 '<"row"<"col-sm-14 col-md-6"l><"col-sm-14 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
@@ -109,7 +121,28 @@ $(function () {
                     extend: 'collection',
                     className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
                     text: '<i class="ti ti-file-export me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
-                    buttons: ['excel']
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            className: 'btn btn-success',
+                            text: 'Export to Excel',
+                            title: 'Books List',
+                            exportOptions: {
+                                columns: ':visible' // Export all visible columns
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            className: 'btn btn-danger',
+                            text: 'Export to PDF',
+                            title: 'Books List',
+                            orientation: 'landscape', // You can customize orientation here
+                            pageSize: 'A4',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        }
+                    ]
                 },
                 {
                     text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add Book</span>',
@@ -139,7 +172,7 @@ $(function () {
             pageLength: 10
         });
 
-        $('div.dt-filter-status').html(`
+        $('div.dt-filter-status').html(` 
             <label for="status-filter" class="me-2 mb-0" style="line-height: 38px;">Filter by Status:</label>
             <select id="status-filter" class="form-select form-select-sm" style="width: 180px; display: inline-block;">
                 <option value="active" selected>Active Books</option>
