@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BooksManagement;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BooksList;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class BooksManagementController extends Controller
@@ -110,31 +110,38 @@ class BooksManagementController extends Controller
         }
 
        public function update(Request $request, $id)
-        {
-        $request->validate([
+{
+    $request->validate([
         'book_title'    => 'required|string|max:255',
         'book_author'   => 'required|string|max:255',
         'book_genre'    => 'nullable|string|max:255',
         'book_yearpub'  => 'nullable|date_format:Y-m-d',
         'book_isbn'     => 'nullable|string|max:20',
         'book_status'   => 'required|in:Borrowed,Available,Reserved',
-        // Add validation for book_cimage if needed
-        ]);
+        'book_cimage'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // add validation for image
+    ]);
 
-        $book = BooksList::findOrFail($id);
+    $book = BooksList::findOrFail($id);
 
-        $book->book_title = $request->book_title;
-        $book->book_author = $request->book_author;
-        $book->book_genre = $request->book_genre;
-        $book->book_yearpub = $request->book_yearpub;
-        $book->book_isbn = $request->book_isbn;
-            $book->book_status = $request->book_status;
-        // Handle image upload if applicable
+    $book->book_title = $request->book_title;
+    $book->book_author = $request->book_author;
+    $book->book_genre = $request->book_genre;
+    $book->book_yearpub = $request->book_yearpub;
+    $book->book_isbn = $request->book_isbn;
+    $book->book_status = $request->book_status;
 
-        $book->save();
-
-        return redirect()->route('books-management.index')->with('success', 'Book updated successfully.');
+    if ($request->hasFile('book_cimage')) {
+        $file = $request->file('book_cimage');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets'), $filename);
+        $book->book_cimage = $filename;
     }
+
+    $book->save();
+
+    return redirect()->route('books-management.index')->with('success', 'Book updated successfully.');
+}
+
 
     // Create or Add Books Function
         public function create()
@@ -155,6 +162,14 @@ class BooksManagementController extends Controller
         'book_cimage'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $imagePath = null;
+
+        if ($request->hasFile('book_cimage')) {
+            $file = $request->file('book_cimage');
+            // Save file to storage/app/public/assets
+            $imagePath = $file->store('assets', 'public');
+        }
+
         $book = new BooksList();
 
         $book->book_title = $request->book_title;
@@ -163,6 +178,7 @@ class BooksManagementController extends Controller
         $book->book_yearpub = $request->book_yearpub;
         $book->book_isbn = $request->book_isbn;
         $book->book_status = $request->book_status;
+        $book->book_cimage = $imagePath; 
 
         if ($request->hasFile('book_cimage')) {
             $file = $request->file('book_cimage');

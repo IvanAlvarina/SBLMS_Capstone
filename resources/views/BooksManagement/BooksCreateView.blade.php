@@ -5,112 +5,112 @@
 @section('content')
 <div class="card">
     <div class="card-body">
-        <form id="add-book-form" action="{{ route('books-management.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="create-book-form" action="{{ route('books-management.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
-                <div class="mb-3 col-md-6">
-                    <label for="book_title" class="form-label">Title</label>
-                    <input type="text" name="book_title" class="form-control" value="{{ old('book_title') }}" required>
+                <!-- Left side: form fields -->
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="book_title" class="form-label">Title</label>
+                        <input type="text" name="book_title" class="form-control" value="{{ old('book_title') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_author" class="form-label">Author</label>
+                        <input type="text" name="book_author" class="form-control" value="{{ old('book_author') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_genre" class="form-label">Genre</label>
+                        @include('partials.genre-dropdown', ['selectedGenre' => old('book_genre')])
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_yearpub" class="form-label">Date Published</label>
+                        <input type="date" name="book_yearpub" class="form-control" value="{{ old('book_yearpub') }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_isbn" class="form-label">ISBN</label>
+                        <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="13" pattern="\d{10}(\d{3})?" title="ISBN must be exactly 10 or 13 digits">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_status" class="form-label">Status</label>
+                        <select name="book_status" class="form-control" required>
+                            <option value="Available" {{ old('book_status') == 'Available' ? 'selected' : '' }}>Available</option>
+                            <option value="Borrowed" {{ old('book_status') == 'Borrowed' ? 'selected' : '' }}>Borrowed</option>
+                            <option value="Reserved" {{ old('book_status') == 'Reserved' ? 'selected' : '' }}>Reserved</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="book_cimage" class="form-label">Book Cover Image (optional)</label>
+                        <input type="file" name="book_cimage" class="form-control" accept="image/*">
+                    </div>
                 </div>
 
-                <div class="mb-3 col-md-6">
-                    <label for="book_author" class="form-label">Author</label>
-                    <input type="text" name="book_author" class="form-control" value="{{ old('book_author') }}" required>
-                </div>
+                <!-- Right side: preview image -->
+                <div class="col-md-4 d-flex flex-column align-items-center justify-content-start">
+                    <label class="form-label mb-3">Book Cover Preview</label>
 
-                <div class="mb-3 col-md-6">
-                    <label for="book_genre" class="form-label">Genre</label>
-                    @include('partials.genre-dropdown')
-                </div>
+                    <img id="cover-preview" src="#" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 6px; border: 1px solid #ddd; padding: 4px; display: none;">
 
-                <div class="mb-3 col-md-6">
-                    <label for="book_yearpub" class="form-label">Date Published</label>
-                    <input type="date" name="book_yearpub" class="form-control" value="{{ old('book_yearpub') }}" required> 
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label for="book_isbn" class="form-label">ISBN</label>
-                    <input type="text" name="book_isbn" class="form-control" value="{{ old('book_isbn') }}" maxlength="13" pattern="\d{10}(\d{3})?" inputmode="numeric" title="ISBN must be exactly 13 digits" required>
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label for="book_status" class="form-label">Status</label>
-                    <select class="form-control" disabled>
-                        <option value="Available" selected>Available</option>
-                    </select>
-                    <input type="hidden" name="book_status" value="Available">
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label for="book_cimage" class="form-label">Book Cover Image (Optional)</label>
-                    <input type="file" name="book_cimage" class="form-control" accept="image/*">
+                    <div id="cover-placeholder" style="width: 150px; height: 200px; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #999; background: #f8f9fa;">
+                        ?
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Add Book</button>
+            <button type="submit" class="btn btn-primary mt-3">Add Book</button>
         </form>
     </div>
 </div>
 @endsection
 
 @push('page-scripts')
-<style>
-.input-error {
-    border: 2px solid red !important;
-    box-shadow: 0 0 5px red !important;
-}
-.input-valid {
-    border: 2px solid green !important;
-    box-shadow: 0 0 5px green !important;
-}
-</style>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.getElementById('add-book-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
+document.getElementById('create-book-form').addEventListener('submit', function(e) {
+    e.preventDefault();  
     Swal.fire({
-        title: 'Add new book?',
+        title: 'Are you sure?',
         text: "Do you want to add this book?",
-        icon: 'question',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, add it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'No, cancel'
     }).then((result) => {
         if (result.isConfirmed) {
             this.submit();
+        } else {
+            Swal.fire('Cancelled', 'No book was added.', 'info');
         }
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('add-book-form');
-    const inputs = form.querySelectorAll('input[required], select[required]');
+// Live preview of uploaded image
+document.querySelector('input[name="book_cimage"]').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('cover-preview');
+    const placeholder = document.getElementById('cover-placeholder');
 
-    function validateInput(input) {
-        if (input.value.trim() === '') {
-            input.classList.add('input-error');
-            input.classList.remove('input-valid');
-        } else {
-            input.classList.add('input-valid');
-            input.classList.remove('input-error');
-        }
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
     }
-
-    inputs.forEach(input => {
-        validateInput(input);
-        input.addEventListener('input', () => validateInput(input));
-        input.addEventListener('change', () => validateInput(input));
-    });
-
-    form.addEventListener('submit', function () {
-        inputs.forEach(input => validateInput(input));
-    });
 });
 </script>
 
