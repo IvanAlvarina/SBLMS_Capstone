@@ -47,9 +47,6 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/tagify/tagify.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 
-    <!-- DataTables Export Styles -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-buttons-bs5/buttons.bootstrap5.min.css') }}" />
-
     @stack('vendor-styles')
     @stack('page-styles')
 
@@ -116,14 +113,6 @@
     <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-
-    <!-- DataTables Buttons JS -->
-    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
 
     <!-- Quill Editor JS -->
     <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>

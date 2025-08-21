@@ -12,8 +12,6 @@
 @endif
 
 @push('page-styles')
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endpush
 
@@ -29,7 +27,7 @@
                 <th>Book ISBN</th>
                 <th>Book Status</th>
                 <th>Book Cover Image</th>
-                <th>Action</th> <!-- ✅ Removed Date Added -->
+                <th>Action</th>
             </tr>
         </thead>
     </table>
@@ -38,15 +36,6 @@
 @endsection
 
 @push('page-scripts')
-<script src="{{ asset('assets/vendor/libs/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 
 <script>

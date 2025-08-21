@@ -65,7 +65,6 @@
             <div data-i18n="Books List">Books List</div>
           </a>
         </li>
-        
     @endrole
 
   </ul>
