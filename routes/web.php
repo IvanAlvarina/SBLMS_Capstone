@@ -6,6 +6,8 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\UserManagement\UserManagementController;
 use App\Http\Controllers\BooksManagement\BooksManagementController;
 use App\Http\Controllers\Chatbot\ChatbotController;
+use App\Http\Controllers\BrowseBook\BrowseBookController;
+use App\Http\Controllers\BooksManagement\BorrowBooksController;
 
 
 //  Root route - redirect to login
@@ -76,5 +78,18 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'chatbot'], function () {
         Route::get('/chat/start', [ChatbotController::class, 'start'])->name('chatbot.start');
         Route::post('/chat/next', [ChatbotController::class, 'next'])->name('chatbot.next');
+    });
+
+    //browse book
+    Route::group(['prefix' => 'browsebook'], function () {
+        Route::get('/browse-book', [BrowseBookController::class, 'index'])->name('browsebook.index');
+        Route::get('/book/{id}', [BrowseBookController::class, 'viewDetails'])->name('browsebook.show');
+        Route::post('/book/{id}/borrow', [BrowseBookController::class, 'borrow'])->name('browsebook.borrow');
+        Route::get('/my-borrows', [BrowseBookController::class, 'myBorrows'])->name('browsebook.myborrows');
+    });
+
+    Route::group(['prefix' => 'borrow-books'], function () {
+        Route::get('/borrow-books', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
+        Route::put('/{id}/approve', [BorrowBooksController::class, 'approve'])->name('borrow-books.approve');
     });
 });

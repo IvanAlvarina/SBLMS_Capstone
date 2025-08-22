@@ -372,4 +372,11 @@
       });
   });
 </script>
+
+@if(auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty'))
+
+  @include('partials.chatbot');
+
+@endif
+
 @endpush
