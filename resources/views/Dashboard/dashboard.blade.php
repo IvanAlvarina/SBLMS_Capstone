@@ -6,10 +6,18 @@
 
 @push('page-styles')
 <style>
+  /* Card hover & transition */
+  .clickable-card {
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
   .clickable-card:hover {
-      box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
-      transform: translateY(-4px);
-      transition: all 0.3s ease;
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+  }
+  .active-card {
+      border: 2px solid #0d6efd;
+      box-shadow: 0 8px 25px rgba(13,110,253,0.4);
   }
 </style>
 @endpush
@@ -28,24 +36,24 @@
         <div class="row">
           <!-- Faculty -->
           <div class="col-md-6 mb-3">
-            <div class="card text-center clickable-card" data-type="faculty" style="cursor:pointer;">
+            <div class="card text-center clickable-card" data-type="faculty">
               <div class="card-body">
                 <h5 class="card-title">Faculty</h5>
                 <h2 class="text-primary">
                   <span class="badge bg-primary me-2"><i class="bi bi-people-fill"></i></span>
-                  {{ $facultyCount }}
+                  <span class="counter" data-count="{{ $facultyCount }}">0</span>
                 </h2>
               </div>
             </div>
           </div>
           <!-- Students -->
           <div class="col-md-6 mb-3">
-            <div class="card text-center clickable-card" data-type="student" style="cursor:pointer;">
+            <div class="card text-center clickable-card" data-type="student">
               <div class="card-body">
                 <h5 class="card-title">Students</h5>
                 <h2 class="text-success">
                   <span class="badge bg-success me-2"><i class="bi bi-person-fill"></i></span>
-                  {{ $studentCount }}
+                  <span class="counter" data-count="{{ $studentCount }}">0</span>
                 </h2>
               </div>
             </div>
@@ -76,12 +84,12 @@
         <div class="row">
           @foreach ($cards as $card)
             <div class="col-md-4 col-sm-6 mb-3">
-              <div class="card text-center clickable-card" data-type="{{ $card['id'] }}" style="cursor:pointer;">
+              <div class="card text-center clickable-card" data-type="{{ $card['id'] }}">
                 <div class="card-body">
                   <h5 class="card-title">{{ $card['title'] }}</h5>
                   <h2 class="text-{{ $card['color'] }}">
                     <span class="badge bg-{{ $card['color'] }} me-2"><i class="bi {{ $card['icon'] }}"></i></span>
-                    {{ $card['count'] }}
+                    <span class="counter" data-count="{{ $card['count'] }}">0</span>
                   </h2>
                 </div>
               </div>
@@ -109,7 +117,6 @@
 
 {{-- ================= STUDENT / FACULTY DASHBOARD ================= --}}
 @if(auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty'))
-
 <div class="container-xxl flex-grow-1 container-p-y">
   <div class="row">
     <div class="col-12">
@@ -153,7 +160,6 @@
     </div>
   </div>
 </div>
-
 @endif
 
 {{-- ================= FORCE PASSWORD CHANGE ================= --}}
@@ -216,13 +222,32 @@ document.addEventListener("DOMContentLoaded", function() {
     new bootstrap.Modal(document.getElementById('forceChangePasswordModal')).show();
   }
 
-  // Details Modal + Fetch
+  // Animate counters
+  document.querySelectorAll('.counter').forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-count');
+      const count = +counter.innerText;
+      const increment = Math.ceil(target / 50);
+      if(count < target) {
+        counter.innerText = count + increment;
+        setTimeout(updateCount, 20);
+      } else {
+        counter.innerText = target;
+      }
+    };
+    updateCount();
+  });
+
+  // Card click for modals + active highlight
   const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
   const modalTitle = document.getElementById('detailsModalLabel');
   const modalContent = document.getElementById('modalContent');
 
   document.querySelectorAll('.clickable-card').forEach(card => {
     card.addEventListener('click', function () {
+      document.querySelectorAll('.clickable-card').forEach(c => c.classList.remove('active-card'));
+      card.classList.add('active-card');
+
       const type = this.getAttribute('data-type');
       modalTitle.textContent = this.querySelector('.card-title').textContent;
       modalContent.innerHTML = '<p class="text-center">Loading...</p>';
@@ -245,18 +270,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
           let html = `<table id="modalTable" class="table table-striped" style="width:100%"><thead><tr>`;
           html += isUser ? '<th>ID</th><th>Full Name</th><th>Email</th><th>Role</th>' : '<th>Book ID</th><th>Title</th><th>Author</th><th>Status</th>';
-          html += `</tr></thead><tbody>`;
-
-          data.data.forEach(item => {
-            if (isUser) {
-              html += `<tr><td>${item.id}</td><td>${item.fullname}</td><td>${item.email}</td><td>${item.role}</td></tr>`;
-            } else {
-              html += `<tr><td>${item.book_id}</td><td>${item.book_title}</td><td>${item.book_author}</td><td>${item.book_status}</td></tr>`;
-            }
-          });
-
-          html += '</tbody></table>';
+          html += `</tr></thead><tbody></tbody></table>`;
           modalContent.innerHTML = html;
+
+          const tbody = modalContent.querySelector('tbody');
+          data.data.forEach((item, i) => {
+            let row = isUser ? 
+              `<tr><td>${item.id}</td><td>${item.fullname}</td><td>${item.email}</td><td>${item.role}</td></tr>` :
+              `<tr><td>${item.book_id}</td><td>${item.book_title}</td><td>${item.book_author}</td><td>${item.book_status}</td></tr>`;
+            tbody.innerHTML += row;
+          });
 
           $('#modalTable').DataTable({
             pageLength: 10, lengthChange: false, searching: false, ordering: false, destroy: true
@@ -266,23 +289,42 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Borrowing Stats Chart
+  // Borrowing Stats Chart - Bar Chart
   @if(auth()->user()->hasRole('super-admin'))
   const borrowStatsChart = new Chart(document.getElementById('borrowStatsChart'), {
-    type: 'doughnut',
+    type: 'bar',
     data: {
       labels: ['Faculty', 'Students'],
       datasets: [{
         label: 'Borrowed Books',
         data: [{{ $facultyBorrowed ?? 0 }}, {{ $studentBorrowed ?? 0 }}],
-        backgroundColor: ['#0d6efd', '#198754']
+        backgroundColor: ['#0d6efd', '#198754'],
+        borderColor: ['#0d6efd', '#198754'],
+        borderWidth: 1
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom' }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.label}: ${context.parsed.y} books`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { precision:0 },
+          title: { display: true, text: 'Number of Borrowed Books' }
+        },
+        x: {
+          title: { display: true, text: 'User Type' }
+        }
       }
     }
   });

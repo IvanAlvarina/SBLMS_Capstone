@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BooksList;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\QueryException;
 
 class BooksManagementController extends Controller
 {
@@ -145,29 +146,44 @@ class BooksManagementController extends Controller
             'book_cimage'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $book = new BooksList();
-        $book->book_title  = $request->book_title;
-        $book->book_author = $request->book_author;
-        $book->book_genre  = $request->book_genre;
-        $book->book_yearpub= $request->book_yearpub;
-        $book->book_isbn   = $request->book_isbn;
-        $book->book_status = $request->book_status;
+        try {
+            $book = new BooksList();
+            $book->book_title  = $request->book_title;
+            $book->book_author = $request->book_author;
+            $book->book_genre  = $request->book_genre;
+            $book->book_yearpub= $request->book_yearpub;
+            $book->book_isbn   = $request->book_isbn;
+            $book->book_status = $request->book_status;
 
-        if ($request->hasFile('book_cimage')) {
-            $file = $request->file('book_cimage');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets'), $filename);
-            $book->book_cimage = $filename;
+            if ($request->hasFile('book_cimage')) {
+                $file = $request->file('book_cimage');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets'), $filename);
+                $book->book_cimage = $filename;
+            }
+
+            // Custom Book ID
+            $latestBook = BooksList::latest('book_id')->first();
+            $nextId = $latestBook ? $latestBook->book_id + 1 : 1;
+            $book->custom_book_id = 'BOOK-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+
+            $book->save();
+
+            return redirect()->route('books-management.index')->with('success', 'Book added successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) { // Duplicate entry
+                $errorMessage = $e->getMessage();
+                $errors = [];
+                if (strpos($errorMessage, 'books_lists_book_title_unique') !== false) {
+                    $errors['duplicate_title'] = 'The book title already exists.';
+                }
+                if (strpos($errorMessage, 'books_lists_book_isbn_unique') !== false) {
+                    $errors['duplicate_isbn'] = 'The ISBN already exists.';
+                }
+                return redirect()->back()->withInput()->withErrors($errors);
+            }
+            throw $e;
         }
-
-        // Custom Book ID
-        $latestBook = BooksList::latest('book_id')->first();
-        $nextId = $latestBook ? $latestBook->book_id + 1 : 1;
-        $book->custom_book_id = 'BOOK-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
-
-        $book->save();
-
-        return redirect()->route('books-management.index')->with('success', 'Book added successfully.');
     }
 
     // 📌 Edit Book

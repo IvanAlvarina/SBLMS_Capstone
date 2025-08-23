@@ -51,19 +51,15 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="book_status" class="form-label">Status</label>
-                        <select name="book_status" class="form-control" required>
-                            <option value="Available" {{ old('book_status') == 'Available' ? 'selected' : '' }}>Available</option>
-                            <option value="Borrowed" {{ old('book_status') == 'Borrowed' ? 'selected' : '' }}>Borrowed</option>
-                            <option value="Reserved" {{ old('book_status') == 'Reserved' ? 'selected' : '' }}>Reserved</option>
-                        </select>
-                        @error('book_status') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="mb-3">
                         <label for="book_cimage" class="form-label">Book Cover Image (optional)</label>
                         <input type="file" name="book_cimage" class="form-control" accept="image/*">
                         @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <input type="hidden" name="book_status" value="Available">
+                        <span class="form-control-plaintext text-success">Available</span>
                     </div>
                 </div>
 
@@ -166,5 +162,23 @@ Swal.fire({
     showConfirmButton: false,
 });
 @endif
+
+// Duplicate title or ISBN error notification
+@if($errors->has('duplicate_title'))
+Swal.fire({
+    icon: 'error',
+    title: 'Duplicate Title!',
+    text: '{{ $errors->first('duplicate_title') }}',
+});
+@endif
+
+@if($errors->has('duplicate_isbn'))
+Swal.fire({
+    icon: 'error',
+    title: 'Duplicate ISBN!',
+    text: '{{ $errors->first('duplicate_isbn') }}',
+});
+@endif
+
 </script>
 @endpush

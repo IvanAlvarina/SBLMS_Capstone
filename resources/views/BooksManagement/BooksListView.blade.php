@@ -14,6 +14,29 @@
 @push('page-styles')
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+
+<style>
+/* Pagination buttons design */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #1e1e2d !important;  /* match your table dark theme */
+    color: #fff !important;
+    border: none;
+    padding: 5px 12px;
+    margin: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #0d6efd !important; /* current page blue */
+    color: #fff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #2a2a3c !important;
+    color: #fff !important;
+}
+</style>
 @endpush
 
 <div class="card-datatable table-responsive pt-0">
@@ -47,7 +70,6 @@
 function formatISBN(isbn) {
     if (!isbn) return '';
     let digits = isbn.replace(/[-\s]/g, '');
-
     if (digits.length === 10) {
         return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
     } else if (digits.length === 13) {
@@ -79,10 +101,7 @@ $(function () {
                 { data: 'book_author' },
                 { data: 'book_genre' },
                 { data: 'book_yearpub' },
-                { 
-                    data: 'book_isbn', 
-                    render: function(data) { return formatISBN(data); }
-                },
+                { data: 'book_isbn', render: function(data) { return formatISBN(data); } },
                 { data: 'book_status' },
                 {
                     data: 'book_cimage',
@@ -102,35 +121,32 @@ $(function () {
                     render: function (data, type, row) {
                         let actions = '';
                         if (row.book_status === 'Removed') {
-                            actions = `
-                                <li>
-                                    <button class="dropdown-item text-success restore-btn" data-id="${row.book_id}">
-                                        <i class="ti ti-refresh me-1"></i> Restore
-                                    </button>
-                                </li>`;
+                            actions = `<li>
+                                <button class="dropdown-item text-success restore-btn" data-id="${row.book_id}">
+                                    <i class="ti ti-refresh me-1"></i> Restore
+                                </button>
+                            </li>`;
                         } else {
-                            actions = `
-                                <li>
-                                    <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
-                                        <i class="ti ti-edit me-1"></i> Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
-                                        <i class="ti ti-trash me-1"></i> Remove
-                                    </button>
-                                </li>`;
+                            actions = `<li>
+                                <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
+                                    <i class="ti ti-edit me-1"></i> Edit
+                                </a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
+                                    <i class="ti ti-trash me-1"></i> Remove
+                                </button>
+                            </li>`;
                         }
 
-                        return `
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ti ti-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    ${actions}
-                                </ul>
-                            </div>`;
+                        return `<div class="dropdown">
+                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                ${actions}
+                            </ul>
+                        </div>`;
                     }
                 }
             ],

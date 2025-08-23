@@ -33,13 +33,13 @@
         <ul class="menu-sub">
           <li class="menu-item {{ request()->routeIs('user-management.index') ? 'active' : '' }}">
             <a href="{{ route('user-management.index') }}" class="menu-link">
-              <div data-i18n="List">List</div>
+              <div data-i18n="Accounts">Accounts</div>
             </a>
           </li>
 
           <li class="menu-item {{ request()->routeIs('user-management.pending-approval') ? 'active' : '' }}">
             <a href="{{ route('user-management.pending-approval') }}" class="menu-link">
-              <div data-i18n="List of Approval">List of Approval</div>
+              <div data-i18n="Pending Approvals">Pending Approvals</div>
             </a>
           </li>
 
