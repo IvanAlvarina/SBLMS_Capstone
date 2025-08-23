@@ -75,7 +75,7 @@
                         </button>
                       </form>
                       <!-- Reject -->
-                      <form action="" method="POST" class="reject-form">
+                      <form action="{{ route('borrow-books.reject', $borrow->id) }}" method="POST" class="reject-form">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="dropdown-item text-danger">

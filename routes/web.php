@@ -35,9 +35,9 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/books-data', [DashboardController::class, 'getBooksData']);
-        Route::get('/users-data', [DashboardController::class, 'getUsersData']);
-        // Add more dashboard routes here
+        Route::get('/books-data', [DashboardController::class, 'getBooksData'])->name('dashboard.books-data');
+        Route::get('/users-data', [DashboardController::class, 'getUsersData'])->name('dashboard.users-data');
+        Route::get('/borrow-stats', [DashboardController::class, 'getBorrowStats'])->name('dashboard.borrow-stats'); // ✅ Faculty vs Student stats
     });
 
     // User Management
@@ -54,33 +54,37 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
     });
 
-
-     // Books Management
+    // Books Management
     Route::group(['prefix' => 'books-management'], function () {
-    Route::get('/', [BooksManagementController::class, 'index'])->name('books-management.index');
-    Route::get('/json', [BooksManagementController::class, 'getBooks'])->name('books-management.json');
-    Route::get('/create', [BooksManagementController::class, 'create'])->name('books-management.create');
-    Route::post('/', [BooksManagementController::class, 'store'])->name('books-management.store');
-    Route::get('/{book_id}/edit', [BooksManagementController::class, 'edit'])->name('books-management.edit');
-    Route::put('/{book_id}', [BooksManagementController::class, 'update'])->name('books-management.update');
-    Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy'); // ✅ fixed
-    Route::get('/books-management/ocr', [BooksManagementController::class, 'ocrCreate'])->name('books-management.ocr');
-    Route::get('/books-management/isbnscanner', [BooksManagementController::class, 'isbnScannerCreate'])->name('books-management.isbnscanner');
+        Route::get('/', [BooksManagementController::class, 'index'])->name('books-management.index');
+        Route::get('/json', [BooksManagementController::class, 'getBooks'])->name('books-management.json');
+        Route::get('/create', [BooksManagementController::class, 'create'])->name('books-management.create');
+        Route::post('/', [BooksManagementController::class, 'store'])->name('books-management.store');
+        Route::get('/{book_id}/edit', [BooksManagementController::class, 'edit'])->name('books-management.edit');
+        Route::put('/{book_id}', [BooksManagementController::class, 'update'])->name('books-management.update');
+        Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy');
+        Route::patch('/{book_id}/restore', [BooksManagementController::class, 'restore'])->name('books-management.restore');
 
+        // Removed Books
+        Route::get('/removed', [BooksManagementController::class, 'removedView'])->name('books-management.removed');
+        Route::get('/json-removed', [BooksManagementController::class, 'getRemovedBooks'])->name('books-management.json.removed');
 
-  });
-  
+        // OCR & ISBN Scanner
+        Route::get('/ocr', [BooksManagementController::class, 'ocrCreate'])->name('books-management.ocr');
+        Route::get('/isbnscanner', [BooksManagementController::class, 'isbnScannerCreate'])->name('books-management.isbnscanner');
+    });
 
     //  Force password change route (only for logged in Student/Faculty)
     Route::post('/force-change-password', [LoginController::class, 'forceChangePassword'])
         ->name('password.forceChange');
 
+    // Chatbot
     Route::group(['prefix' => 'chatbot'], function () {
         Route::get('/chat/start', [ChatbotController::class, 'start'])->name('chatbot.start');
         Route::post('/chat/next', [ChatbotController::class, 'next'])->name('chatbot.next');
     });
 
-    //browse book
+    // Browse Book
     Route::group(['prefix' => 'browsebook'], function () {
         Route::get('/browse-book', [BrowseBookController::class, 'index'])->name('browsebook.index');
         Route::get('/book/{id}', [BrowseBookController::class, 'viewDetails'])->name('browsebook.show');
@@ -88,8 +92,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/my-borrows', [BrowseBookController::class, 'myBorrows'])->name('browsebook.myborrows');
     });
 
+    // Borrow Books (Approval Management)
     Route::group(['prefix' => 'borrow-books'], function () {
-        Route::get('/borrow-books', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
+        Route::get('/', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
         Route::put('/{id}/approve', [BorrowBooksController::class, 'approve'])->name('borrow-books.approve');
+        Route::put('/{id}/reject', [BorrowBooksController::class, 'reject'])->name('borrow-books.reject');
     });
 });

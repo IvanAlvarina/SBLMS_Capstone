@@ -62,11 +62,20 @@
               <div data-i18n="Books List">Books List</div>
             </a>
           </li>
-          <li class="menu-item {{ request()->routeIs('borrow-books.index') ? 'active' : '' }}">
+
+           <li class="menu-item {{ request()->routeIs('borrow-books.index') ? 'active' : '' }}">
             <a href="{{ route('borrow-books.index') }}" class="menu-link">
-              <div data-i18n="Borrowed Books">Borrowed Books</div>
+              <div data-i18n="Borrow Requests">Borrow Requests</div>
             </a>
           </li>
+
+          <li class="menu-item {{ request()->routeIs('books-management.removed') ? 'active' : '' }}">
+          <a href="{{ route('books-management.removed') }}" class="menu-link">
+            <div data-i18n="Books Removed">Books Removed</div>
+          </a>
+        </li>
+
+         
         </ul>
       </li>
     @endrole
@@ -75,7 +84,7 @@
     <li class="menu-item {{ request()->is('browsebook*') ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-books"></i>
-        <div data-i18n="Books">Books</div>
+        <div data-i18n="Browse Books">Browse Books</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item {{ request()->routeIs('browsebook.index') ? 'active' : '' }}">
