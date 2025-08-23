@@ -6,26 +6,46 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BooksList;
 use App\Models\RegisteredUsers;
+use App\Models\BorrowBook; // ✅ Make sure you have this model
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        // 📚 Book stats
         $totalBooks = BooksList::count();
         $availableBooks = BooksList::where('book_status', 'Available')->count();
         $borrowedBooks = BooksList::where('book_status', 'Borrowed')->count();
         $reservedBooks = BooksList::where('book_status', 'Reserved')->count();
         $removedBooks = BooksList::where('book_status', 'Removed')->count();
 
+        // 👥 User stats
         $facultyCount = RegisteredUsers::where('role', 'faculty')->count();
         $studentCount = RegisteredUsers::where('role', 'student')->count();
 
+        // 📊 Borrowing stats (Approved only)
+        $facultyBorrowed = BorrowBook::whereHas('user', fn($q) => $q->where('role', 'faculty'))
+            ->where('status', 'Approved')
+            ->count();
+
+        $studentBorrowed = BorrowBook::whereHas('user', fn($q) => $q->where('role', 'student'))
+            ->where('status', 'Approved')
+            ->count();
+
         return view('Dashboard.dashboard', compact(
-            'totalBooks', 'availableBooks', 'borrowedBooks', 'reservedBooks', 'removedBooks',
-            'facultyCount', 'studentCount'
+            'totalBooks',
+            'availableBooks',
+            'borrowedBooks',
+            'reservedBooks',
+            'removedBooks',
+            'facultyCount',
+            'studentCount',
+            'facultyBorrowed',   // ✅ matches Blade
+            'studentBorrowed'    // ✅ matches Blade
         ));
     }
 
+    // 📚 Fetch books by status (AJAX)
     public function getBooksData(Request $request)
     {
         $type = $request->query('type');
@@ -51,6 +71,7 @@ class DashboardController extends Controller
         ]);
     }
 
+    // 👥 Fetch users by role (AJAX)
     public function getUsersData(Request $request)
     {
         $type = $request->query('type');

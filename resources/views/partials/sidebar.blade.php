@@ -25,47 +25,81 @@
 
     {{-- User Management (Visible ONLY for Super Admin) --}}
     @role('super-admin')
-    <li class="menu-item {{ request()->is('user-management*') ? 'active open' : '' }}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons ti ti-user"></i>
-        <div data-i18n="User Management">User Management</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('user-management.index') ? 'active' : '' }}">
-          <a href="{{ route('user-management.index') }}" class="menu-link">
-            <div data-i18n="List">List</div>
+      <li class="menu-item {{ request()->is('user-management*') ? 'active open' : '' }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons ti ti-user"></i>
+          <div data-i18n="User Management">User Management</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item {{ request()->routeIs('user-management.index') ? 'active' : '' }}">
+            <a href="{{ route('user-management.index') }}" class="menu-link">
+              <div data-i18n="Accounts">Accounts</div>
+            </a>
+          </li>
+
+          <li class="menu-item {{ request()->routeIs('user-management.pending-approval') ? 'active' : '' }}">
+            <a href="{{ route('user-management.pending-approval') }}" class="menu-link">
+              <div data-i18n="Pending Approvals">Pending Approvals</div>
+            </a>
+          </li>
+
+          <li class="menu-item {{ request()->routeIs('user-management.faculty-creation.index') ? 'active' : '' }}">
+            <a href="{{ route('user-management.faculty-creation.index') }}" class="menu-link">
+              <div data-i18n="Faculty">Faculty</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {{-- Books Management --}}
+      <li class="menu-item {{ request()->is('books-management*') || request()->is('borrow-books*') ? 'active open' : '' }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons ti ti-book"></i>
+          <div data-i18n="Books Management">Books Management</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item {{ request()->routeIs('books-management.index') ? 'active' : '' }}">
+            <a href="{{ route('books-management.index') }}" class="menu-link">
+              <div data-i18n="Books List">Books List</div>
+            </a>
+          </li>
+
+           <li class="menu-item {{ request()->routeIs('borrow-books.index') ? 'active' : '' }}">
+            <a href="{{ route('borrow-books.index') }}" class="menu-link">
+              <div data-i18n="Borrow Requests">Borrow Requests</div>
+            </a>
+          </li>
+
+          <li class="menu-item {{ request()->routeIs('books-management.removed') ? 'active' : '' }}">
+          <a href="{{ route('books-management.removed') }}" class="menu-link">
+            <div data-i18n="Books Removed">Books Removed</div>
           </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('user-management.pending-approval') ? 'active' : '' }}">
-          <a href="{{ route('user-management.pending-approval') }}" class="menu-link">
-            <div data-i18n="List of Approval">List of Approval</div>
-          </a>
-        </li>
-
-        <li class="menu-item {{ request()->routeIs('user-management.faculty-creation.index') ? 'active' : '' }}">
-          <a href="{{ route('user-management.faculty-creation.index') }}" class="menu-link">
-            <div data-i18n="Faculty">Faculty</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-
-
-     {{-- Books Management --}}
-    <li class="menu-item {{ request()->is('books-management*') ? 'active open' : '' }}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-       <i class="menu-icon tf-icons ti ti-book"></i>
-        <div data-i18n="Books Management">Books Management</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('books-management.index') ? 'active' : '' }}">
-          <a href="{{ route('books-management.index') }}" class="menu-link">
-            <div data-i18n="Books List">Books List</div>
-          </a>
-        </li>
+         
+        </ul>
+      </li>
     @endrole
 
+    {{-- Browse books (Visible for all roles) --}}
+    <li class="menu-item {{ request()->is('browsebook*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-books"></i>
+        <div data-i18n="Browse Books">Browse Books</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('browsebook.index') ? 'active' : '' }}">
+          <a href="{{ route('browsebook.index') }}" class="menu-link">
+            <div data-i18n="List of Books">List of Books</div>
+          </a>
+        </li>
+        @hasanyrole('student|faculty')
+          <li class="menu-item {{ request()->routeIs('browsebook.myborrows') ? 'active' : '' }}">
+            <a href="{{ route('browsebook.myborrows') }}" class="menu-link">
+              <div data-i18n="My Borrow">My Borrow</div>
+            </a>
+          </li>
+        @endrole
+      </ul>
+    </li>
   </ul>
 </aside>

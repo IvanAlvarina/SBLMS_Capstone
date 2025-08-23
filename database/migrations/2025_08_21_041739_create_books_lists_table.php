@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('book_isbn')->unique();
             $table->string('book_status')->nullable();
             $table->string('book_cimage')->nullable();
-            $table->string('book_custom_book_id')->nullable();
+            $table->string('custom_book_id')->nullable();
             $table->timestamps();
         });
     }
