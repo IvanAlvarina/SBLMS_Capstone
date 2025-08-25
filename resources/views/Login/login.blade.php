@@ -108,7 +108,7 @@
                            class="form-control @error('student_no') is-invalid @enderror"
                            id="username"
                            name="username"
-                           placeholder="Enter your student no. eg: 22-0066-927"
+                           placeholder="Enter your student no. or faculty no."
                            autofocus required />
                     @error('student_no')
                         <div class="invalid-feedback">{{ $message }}</div>

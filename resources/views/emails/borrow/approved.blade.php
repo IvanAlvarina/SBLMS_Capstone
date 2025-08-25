@@ -53,8 +53,8 @@
         <p>Your request to borrow the book <strong>"{{ $borrow->book->book_title }}"</strong> has been <strong>approved</strong>.</p>
 
         <ul class="details">
-            <li><strong>Start Date:</strong> {{ $borrow->approved_at->format('M d, Y h:i A') }}</li>
-            <li><strong>Due Date:</strong> {{ $borrow->due_date->format('M d, Y h:i A') }}</li>
+            <li><strong>Start Date:</strong> {{ $borrow->approved_at->timezone('Asia/Manila')->format('M d, Y h:i A') }}</li>
+            <li><strong>Due Date:</strong> {{ $borrow->due_date->timezone('Asia/Manila')->format('M d, Y h:i A') }}</li>
             <li><strong>Duration:</strong>
                 @if($borrow->user->role === 'Student')
                     1 week

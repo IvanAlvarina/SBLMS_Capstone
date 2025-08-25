@@ -5,6 +5,9 @@
 @section('content')
 
 @push('page-styles')
+
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/form-validation.css') }}" />
+    
   <style>
   .clickable-card:hover {
       box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
@@ -154,20 +157,20 @@
 
             <!-- History on the right -->
             <div class="col-md-8">
-              <h2 class="fw-bold mb-3 text-white">History</h2>
-              <p class="text-white">
+              <h2 class="fw-bold mb-3">History</h2>
+              <p>
                 St. Bridget College (SBC), founded in 1947 by the Religious of the Good Shepherd (RGS), 
                 is a private Catholic institution located in Batangas City, Philippines. 
                 It was established to provide quality education and formation grounded in Christian values. 
                 Throughout the years, SBC has built a legacy of academic excellence and social responsibility, 
                 offering various educational programs from elementary to tertiary levels.
               </p>
-              <p class="text-white">
+              <p >
                 The institution aims to nurture the holistic development of its students by fostering a learning environment 
                 that encourages intellectual, emotional, and spiritual growth. SBC takes pride in its rich history, 
                 values-based education, and commitment to community service.
               </p>
-              <p class="text-white mb-0">
+              <p class="mb-0">
                 Today, SBC continues to serve the youth of Batangas and surrounding areas, 
                 providing them with the tools to succeed in their academic, professional, and personal lives.
               </p>
@@ -184,45 +187,64 @@
 
 {{-- Force Password Change Modal --}}
 @if(session('force_password_change') && (auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty')))
-<div class="modal fade show" id="forceChangePasswordModal" tabindex="-1" aria-modal="true" role="dialog" style="display:block; background: rgba(0,0,0,0.6);">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{{ route('password.forceChange') }}" method="POST">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title">Change Your Password</h5>
-        </div>
-        <div class="modal-body">
-          <p>You must change your password before continuing.</p>
-          <div class="mb-3">
-            <label for="new_password" class="form-label">New Password</label>
-            <input type="password" name="new_password" id="new_password" class="form-control" required>
+  <div class="modal fade show" id="forceChangePasswordModal" tabindex="-1" aria-modal="true" role="dialog" style="display:block; background: rgba(0,0,0,0.6);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{{ route('password.forceChange') }}" method="POST">
+          @csrf
+          <div class="modal-header">
+            <h5 class="modal-title">Change Your Password</h5>
           </div>
-          <div class="mb-3">
-            <label for="new_password_confirmation" class="form-label">Confirm Password</label>
-            <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
+          <div class="modal-body">
+            <p>You must change your password before continuing.</p>
+            <div class="mb-3">
+              <label for="new_password" class="form-label">New Password</label>
+              <div class="input-group">
+                <input type="password" name="new_password" id="new_password" class="form-control" required>
+                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="new_password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+
+              <ul class="mt-2 small text-muted" id="password-criteria">
+                <li id="length" class="text-danger">At least 8 characters</li>
+                <li id="uppercase" class="text-danger">At least 1 uppercase letter</li>
+                <li id="number" class="text-danger">At least 1 number</li>
+                <li id="special" class="text-danger">At least 1 special character (!@#$%^&*)</li>
+              </ul>
+            </div>
+
+            <div class="mb-3">
+              <label for="new_password_confirmation" class="form-label">Confirm Password</label>
+              <div class="input-group">
+                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
+                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="new_password_confirmation">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+      
           </div>
-        </div>
-        <div class="modal-footer">
-          {{-- Update Password Button --}}
-          <button type="submit" class="btn btn-primary">Update Password</button>
+          <div class="modal-footer">
+            {{-- Update Password Button --}}
+            <button type="submit" class="btn btn-primary">Update Password</button>
 
-          {{-- Logout Button --}}
-          <a href="{{ route('logout') }}" 
-             onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
-             class="btn btn-danger">
-             Logout
-          </a>
-        </div>
-      </form>
+            {{-- Logout Button --}}
+            <a href="{{ route('logout') }}" 
+              onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
+              class="btn btn-danger">
+              Logout
+            </a>
+          </div>
+        </form>
 
-      {{-- Hidden Logout Form --}}
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-        @csrf
-      </form>
+        {{-- Hidden Logout Form --}}
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+          @csrf
+        </form>
+      </div>
     </div>
   </div>
-</div>
 @endif
 
 <!-- Modal -->
@@ -245,138 +267,193 @@
 @endsection
 
 @push('page-scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let modal = document.getElementById('forceChangePasswordModal');
-      if (modal) {
-        modal.classList.add('show');
-        modal.style.display = 'block';
-        modal.setAttribute('data-bs-backdrop', 'static');
-        modal.setAttribute('data-bs-keyboard', 'false');
-      }
-  });
-</script>
+    <script src="{{ asset('assets/vendor/libs/@form-validation/popular.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/@form-validation/bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/@form-validation/auto-focus.js') }}"></script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
-      const modalTitle = document.getElementById('detailsModalLabel');
-      const modalContent = document.getElementById('modalContent');
+  <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        let modal = document.getElementById('forceChangePasswordModal');
+        if (modal) {
+          modal.classList.add('show');
+          modal.style.display = 'block';
+          modal.setAttribute('data-bs-backdrop', 'static');
+          modal.setAttribute('data-bs-keyboard', 'false');
+        }
+    });
+  </script>
 
-      document.querySelectorAll('.clickable-card').forEach(card => {
-          card.addEventListener('click', function () {
-              const type = this.getAttribute('data-type');
-              modalTitle.textContent = this.querySelector('.card-title').textContent;
-              modalContent.innerHTML = '<p class="text-center">Loading...</p>';
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+        const modalTitle = document.getElementById('detailsModalLabel');
+        const modalContent = document.getElementById('modalContent');
 
-              modal.show();
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const type = this.getAttribute('data-type');
+                modalTitle.textContent = this.querySelector('.card-title').textContent;
+                modalContent.innerHTML = '<p class="text-center">Loading...</p>';
 
-              let url;
-              let isUser = false;
+                modal.show();
 
-              // Determine which endpoint to call based on the type clicked
-              if (['faculty', 'student'].includes(type)) {
-                  url = `/dashboard/users-data?type=${type}`;
-                  isUser = true;
-              } else {
-                  url = `/dashboard/books-data?type=${type}`;
-              }
+                let url;
+                let isUser = false;
 
-              fetch(url)
-                  .then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          if(data.data.length === 0){
-                              modalContent.innerHTML = '<p class="text-center">No records found.</p>';
-                              return;
-                          }
+                // Determine which endpoint to call based on the type clicked
+                if (['faculty', 'student'].includes(type)) {
+                    url = `/dashboard/users-data?type=${type}`;
+                    isUser = true;
+                } else {
+                    url = `/dashboard/books-data?type=${type}`;
+                }
 
-                          let html = '';
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if(data.data.length === 0){
+                                modalContent.innerHTML = '<p class="text-center">No records found.</p>';
+                                return;
+                            }
 
-                          if (isUser) {
-                              // User table
-                              html = `
-                                  <table id="modalTable" class="table table-striped" style="width:100%">
-                                      <thead>
-                                          <tr>
-                                              <th>ID</th>
-                                              <th>Full Name</th>
-                                              <th>Email</th>
-                                              <th>Role</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                              `;
+                            let html = '';
 
-                              data.data.forEach(user => {
-                                  html += `
-                                      <tr>
-                                          <td>${user.id}</td>
-                                          <td>${user.fullname}</td>
-                                          <td>${user.email}</td>
-                                          <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
-                                      </tr>
-                                  `;
-                              });
+                            if (isUser) {
+                                // User table
+                                html = `
+                                    <table id="modalTable" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Full Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                `;
 
-                              html += '</tbody></table>';
+                                data.data.forEach(user => {
+                                    html += `
+                                        <tr>
+                                            <td>${user.id}</td>
+                                            <td>${user.fullname}</td>
+                                            <td>${user.email}</td>
+                                            <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+                                        </tr>
+                                    `;
+                                });
 
-                          } else {
-                              // Book table
-                              html = `
-                                  <table id="modalTable" class="table table-striped" style="width:100%">
-                                      <thead>
-                                          <tr>
-                                              <th>Book ID</th>
-                                              <th>Title</th>
-                                              <th>Author</th>
-                                              <th>Status</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                              `;
+                                html += '</tbody></table>';
 
-                              data.data.forEach(book => {
-                                  html += `
-                                      <tr>
-                                          <td>${book.book_id}</td>
-                                          <td>${book.book_title}</td>
-                                          <td>${book.book_author}</td>
-                                          <td>${book.book_status}</td>
-                                      </tr>
-                                  `;
-                              });
+                            } else {
+                                // Book table
+                                html = `
+                                    <table id="modalTable" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Book ID</th>
+                                                <th>Title</th>
+                                                <th>Author</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                `;
 
-                              html += '</tbody></table>';
-                          }
+                                data.data.forEach(book => {
+                                    html += `
+                                        <tr>
+                                            <td>${book.book_id}</td>
+                                            <td>${book.book_title}</td>
+                                            <td>${book.book_author}</td>
+                                            <td>${book.book_status}</td>
+                                        </tr>
+                                    `;
+                                });
 
-                          modalContent.innerHTML = html;
+                                html += '</tbody></table>';
+                            }
 
-                          // Initialize DataTable
-                          $('#modalTable').DataTable({
-                              pageLength: 10,
-                              lengthChange: false,
-                              searching: false,
-                              ordering: false,
-                              destroy: true // allow re-init
-                          });
+                            modalContent.innerHTML = html;
 
-                      } else {
-                          modalContent.innerHTML = '<p class="text-danger text-center">Failed to load data.</p>';
-                      }
-                  })
-                  .catch(() => {
-                      modalContent.innerHTML = '<p class="text-danger text-center">Error fetching data.</p>';
-                  });
-          });
+                            // Initialize DataTable
+                            $('#modalTable').DataTable({
+                                pageLength: 10,
+                                lengthChange: false,
+                                searching: false,
+                                ordering: false,
+                                destroy: true // allow re-init
+                            });
+
+                        } else {
+                            modalContent.innerHTML = '<p class="text-danger text-center">Failed to load data.</p>';
+                        }
+                    })
+                    .catch(() => {
+                        modalContent.innerHTML = '<p class="text-danger text-center">Error fetching data.</p>';
+                    });
+            });
+        });
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Show/Hide password toggle
+      document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function () {
+          const inputId = this.getAttribute('data-target');
+          const input = document.getElementById(inputId);
+          const icon = this.querySelector('i');
+
+          if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace("bi-eye", "bi-eye-slash");
+          } else {
+            input.type = "password";
+            icon.classList.replace("bi-eye-slash", "bi-eye");
+          }
+        });
       });
-  });
-</script>
 
-@if(auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty'))
+      // Password criteria validation
+      const passwordInput = document.getElementById('new_password');
+      const criteria = {
+        length: document.getElementById('length'),
+        uppercase: document.getElementById('uppercase'),
+        number: document.getElementById('number'),
+        special: document.getElementById('special'),
+      };
 
-  @include('partials.chatbot');
+      passwordInput.addEventListener('input', function () {
+        const value = this.value;
 
-@endif
+        // Check length
+        criteria.length.classList.toggle('text-success', value.length >= 8);
+        criteria.length.classList.toggle('text-danger', value.length < 8);
+
+        // Check uppercase
+        criteria.uppercase.classList.toggle('text-success', /[A-Z]/.test(value));
+        criteria.uppercase.classList.toggle('text-danger', !/[A-Z]/.test(value));
+
+        // Check number
+        criteria.number.classList.toggle('text-success', /[0-9]/.test(value));
+        criteria.number.classList.toggle('text-danger', !/[0-9]/.test(value));
+
+        // Check special character
+        criteria.special.classList.toggle('text-success', /[!@#$%^&*(),.?":{}|<>]/.test(value));
+        criteria.special.classList.toggle('text-danger', !/[!@#$%^&*(),.?":{}|<>]/.test(value));
+      });
+    });
+  </script>
+
+
+  @if(auth()->user()->hasRole('student') || auth()->user()->hasRole('faculty'))
+
+    @include('partials.chatbot');
+
+  @endif
 
 @endpush

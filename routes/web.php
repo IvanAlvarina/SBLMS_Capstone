@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'borrow-books'], function () {
         Route::get('/borrow-books', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
+        Route::get('/json', [BorrowBooksController::class, 'getBorrowedBooks'])->name('borrow-books.json');
         Route::put('/{id}/approve', [BorrowBooksController::class, 'approve'])->name('borrow-books.approve');
     });
 });

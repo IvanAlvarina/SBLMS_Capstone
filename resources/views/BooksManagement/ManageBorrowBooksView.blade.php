@@ -3,103 +3,134 @@
 @section('title', 'Borrowed Books Requests')
 
 @section('content')
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Pending Borrow Requests</h5>
-  </div>
 
-  <div class="card-body">
-    @if($borrowedBooks->isEmpty())
-      <div class="alert alert-info">
-        No pending borrow requests found.
-      </div>
-    @else
-      <div class="table-responsive">
-        <table class="table table-striped align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Book Title</th>
-              <th>Requested By</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Requested At</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($borrowedBooks as $index => $borrow)
-              <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $borrow->book->book_title ?? 'N/A' }}</td>
-                <td>
-                  {{ $borrow->user->fullname }} -
-                  @if($borrow->user->role === 'Student')
-                      {{ $borrow->user->student_no ?? 'N/A' }}
-                  @elseif($borrow->user->role === 'Faculty')
-                      {{ $borrow->user->faculty_no ?? 'N/A' }}
-                  @else
-                      N/A
-                  @endif
-                </td>
+@push('page-styles')
 
-                <td>
-                  @if($borrow->user->role === 'Student')
-                      <span class="badge bg-primary">{{ $borrow->user->role }}</span>
-                  @elseif($borrow->user->role === 'Faculty')
-                      <span class="badge bg-success">{{ $borrow->user->role }}</span>
-                  @else
-                      <span class="badge bg-secondary">{{ $borrow->user->role ?? 'User' }}</span>
-                  @endif
-                </td>
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 
-                <td>
-                  <span class="badge bg-warning">{{ $borrow->status }}</span>
-                </td>
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/spinkit/spinkit.css') }}" />
 
-                <td>{{ optional($borrow->created_at)->timezone('Asia/Manila')->format('M d, Y h:i A') }}</td>
+<style>
+    #page-loader.hidden {
+        display: none !important;
+    }
+</style>
 
-                <td>
-                  <!-- 3-dot dropdown -->
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-icon btn-text-secondary dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                      <i class="ti ti-dots-vertical"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                      <!-- Approve -->
-                      <form action="{{ route('borrow-books.approve', $borrow->id) }}" method="POST" class="approve-form">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="dropdown-item text-success">
-                          <i class="ti ti-check me-1"></i> Approve
-                        </button>
-                      </form>
-                      <!-- Reject -->
-                      <form action="" method="POST" class="reject-form">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="dropdown-item text-danger">
-                          <i class="ti ti-x me-1"></i> Reject
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    @endif
+@endpush
 
-    <!-- Pagination -->
-    <div class="mt-3">
-        {{ $borrowedBooks->links('pagination::bootstrap-5') }}
+{{--  Success Notification --}}
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="ti ti-checks me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-  </div>
+@endif
+
+{{-- Error Notification --}}
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="ti ti-alert-triangle me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+<!-- Page Loader (Spinkit Circle) -->
+<div id="page-loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 hidden" style="z-index: 1050; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="sk-circle sk-primary">
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+        <div class="sk-circle-dot"></div>
+    </div>
+</div>
+    
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Pending Borrow Requests</h5>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="borrowBooksTable" class="table table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Book Title</th>
+                        <th>Requested By</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Requested At</th>
+                        <th>Approved At</th>
+                        <th>Due Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection
 
 @push('page-scripts')
+    {{-- SweetAlert --}}
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+
+    <script>
+        
+        $(document).ready(function () {
+            // Ensure loader is hidden initially
+            $('#page-loader').addClass('hidden');
+        });
+
+    </script>
+
+    <script>
+        $(function() {
+            $('#borrowBooksTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('borrow-books.json') }}",
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'book_title', name: 'book.book_title' },
+                    { data: 'user_name', name: 'user.fullname' },
+                    { data: 'role', name: 'user.role' },
+                    { data: 'status', name: 'status' },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'approved_at', name: 'approved_at' },
+                    { data: 'due_date', name: 'due_date' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ]
+            });
+
+            // optional: confirmation for approve
+            $(document).on('submit', '.approve-form', function(e) {
+                e.preventDefault();
+                let form = this;
+                Swal.fire({
+                    title: "Approve Request?",
+                    text: "This will approve the borrow request.",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, approve it",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                         $('#page-loader').removeClass('hidden');
+                    }
+                });
+            });
+        });
+    </script>
 @endpush
