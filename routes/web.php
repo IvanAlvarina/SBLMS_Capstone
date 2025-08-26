@@ -89,8 +89,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::group(['prefix' => 'borrow-books'], function () {
-        Route::get('/borrow-books', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
+        Route::get('/borrow-books-pending', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
         Route::get('/json', [BorrowBooksController::class, 'getBorrowedBooks'])->name('borrow-books.json');
         Route::put('/{id}/approve', [BorrowBooksController::class, 'approve'])->name('borrow-books.approve');
+        Route::get('/borrow-books-approved', [BorrowBooksController::class, 'ApprovedBorrowIndex'])->name('borrow-books.approved');
+        Route::get('/json-approved', [BorrowBooksController::class, 'getApprovedBorrowedBooks'])->name('borrow-books.json.approved');
+        Route::delete('/borrow-books/{id}/delete-approved', [BorrowBooksController::class, 'deleteApprovedBorrowedBook'])->name('borrow-books.delete-approved');
+
+
     });
 });

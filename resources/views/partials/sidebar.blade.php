@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo">
     <a href="{{ route('dashboard.index') }}" class="app-brand-link">
-      <img src="{{ asset('storage/assets/logo.jpg') }}" alt="SBLMS Logo" class="app-brand-logo demo" width="32" height="22">
+      <img src="{{ asset('assets/bgpicture/logo.jpg') }}" alt="SBLMS Logo" class="app-brand-logo demo" width="32" height="22">
       <span class="app-brand-text demo menu-text fw-bold">SBLMS</span>
     </a>
 
@@ -64,7 +64,12 @@
           </li>
           <li class="menu-item {{ request()->routeIs('borrow-books.index') ? 'active' : '' }}">
             <a href="{{ route('borrow-books.index') }}" class="menu-link">
-              <div data-i18n="Borrowed Books">Borrowed Books</div>
+              <div data-i18n="Pending Borrows">Pending Borrows</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('borrow-books.approved') ? 'active' : '' }}">
+            <a href="{{ route('borrow-books.approved') }}" class="menu-link">
+              <div data-i18n="Approved Request">Approved Request</div>
             </a>
           </li>
         </ul>

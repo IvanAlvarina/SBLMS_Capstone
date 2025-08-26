@@ -7,15 +7,6 @@
 @push('page-styles')
 
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/spinkit/spinkit.css') }}" />
-
-<style>
-    #page-loader.hidden {
-        display: none !important;
-    }
-</style>
-
 @endpush
 
 {{--  Success Notification --}}
@@ -36,27 +27,12 @@
     </div>
 @endif
 
-<!-- Page Loader (Spinkit Circle) -->
-<div id="page-loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 hidden" style="z-index: 1050; background-color: rgba(0, 0, 0, 0.5);">
-    <div class="sk-circle sk-primary">
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-        <div class="sk-circle-dot"></div>
-    </div>
-</div>
+{{-- spinner --}}
+@include('components.loader');
     
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Pending Borrow Requests</h5>
+        <h5 class="mb-0">Approved Borrow Books</h5>
     </div>
 
         <div class="card-body">
@@ -69,7 +45,8 @@
                             <th>Requested By</th>
                             <th>Role</th>
                             <th>Status</th>
-                            <th>Requested At</th>
+                            <th>Due At</th>
+                            <th>Days</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -97,36 +74,61 @@
             $('#borrowBooksTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('borrow-books.json') }}",
+                ajax: "{{ route('borrow-books.json.approved') }}",
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'book_title', name: 'book.book_title' },
                     { data: 'user_name', name: 'user.fullname' },
                     { data: 'role', name: 'user.role' },
                     { data: 'status', name: 'status' },
-                    { data: 'created_at', name: 'created_at' },
+                    { data: 'due_date', name: 'due_date' },
+                    { data: 'days_left', name: 'daysRemaining'}, 
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
             });
 
-            // optional: confirmation for approve
             $(document).on('submit', '.approve-form', function(e) {
-                e.preventDefault();
-                let form = this;
-                Swal.fire({
-                    title: "Approve Request?",
-                    text: "This will approve the borrow request.",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, approve it",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                         $('#page-loader').removeClass('hidden');
-                    }
+                    e.preventDefault();
+                    let form = this;
+
+                    Swal.fire({
+                        title: "Mark as Completed?",
+                        text: "Are you sure you want to complete this borrow? The book will be marked as available again.",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, complete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#page-loader').removeClass('hidden');
+
+                            $.ajax({
+                                url: form.action,
+                                method: form.method,
+                                data: $(form).serialize(),
+                                success: function(response) {
+                                    $('#page-loader').addClass('hidden');
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: "Completed!",
+                                            text: response.message,
+                                            icon: "success",
+                                            confirmButtonText: "OK"
+                                        });
+                                        $('#borrowBooksTable').DataTable().ajax.reload(null, false); // refresh table
+                                    } else {
+                                        Swal.fire("Error", response.message, "error");
+                                    }
+                                },
+                                error: function(xhr) {
+                                    $('#page-loader').addClass('hidden');
+                                    Swal.fire("Error", "Something went wrong while completing.", "error");
+                                }
+                            });
+                        }
+                    });
                 });
-            });
+
         });
     </script>
 @endpush

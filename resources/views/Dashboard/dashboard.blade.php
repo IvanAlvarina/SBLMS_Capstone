@@ -112,7 +112,7 @@
       <div class="col-12">
         <div 
           class="card text-white border-0 shadow-sm position-relative" 
-          style="background-image: url('{{ asset('storage/assets/wallpaper.jpg') }}'); 
+          style="background-image: url('{{ asset('assets/bgpicture/wallpaper.jpg') }}'); 
                 background-size: cover; 
                 background-position: center; 
                 height: 400px;

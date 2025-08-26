@@ -29,6 +29,9 @@
 </style>
 @endpush
 
+{{-- spinner --}}
+@include('components.loader')
+
 <!-- Search Bar -->
 <div class="card mb-4">
   <div class="card-body">
@@ -162,6 +165,8 @@ $(document).ready(function(){
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
+
+                $('#page-loader').removeClass('hidden');
             }
         });
     });
