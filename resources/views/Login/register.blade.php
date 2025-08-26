@@ -34,16 +34,16 @@
                 
                 <div class="carousel-inner h-100">
                     <div class="carousel-item active">
-                        <img src="{{ asset('storage/assets/wallpaper.jpg') }}" alt="Slide 1">
+                        <img src="{{ asset('assets/bgpicture/wallpaper.jpg') }}" alt="Slide 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper2.jpg') }}" alt="Slide 2">
+                        <img src="{{ asset('assets/bgpicture/wallpaper2.jpg') }}" alt="Slide 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper3.jpg') }}" alt="Slide 3">
+                        <img src="{{ asset('assets/bgpicture/wallpaper3.jpg') }}" alt="Slide 3">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper4.jpg') }}" alt="Slide 4">
+                        <img src="{{ asset('assets/bgpicture/wallpaper4.jpg') }}" alt="Slide 4">
                     </div>
                 </div>
 
