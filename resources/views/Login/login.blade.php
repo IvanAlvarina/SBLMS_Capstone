@@ -33,7 +33,7 @@
                  data-bs-ride="carousel" data-bs-interval="4000">
                 
                 <div class="carousel-inner h-100">
-                    <div class="carousel-item active">
+                   <div class="carousel-item active">
                         <img src="{{ asset('assets/bgpicture/wallpaper.jpg') }}" alt="Slide 1">
                     </div>
                     <div class="carousel-item">
@@ -45,6 +45,7 @@
                     <div class="carousel-item">
                         <img src="{{ asset('assets/bgpicture/wallpaper4.jpg') }}" alt="Slide 4">
                     </div>
+
                 </div>
 
                 <!-- Controls -->
