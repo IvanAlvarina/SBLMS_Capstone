@@ -151,7 +151,7 @@
             
             <!-- Logo on the left -->
             <div class="col-md-4 text-center mb-4 mb-md-0">
-              <img src="{{ asset('storage/assets/logo.jpg') }}" alt="SBC Logo" 
+              <img src="{{ asset('assets/bgpicture/logo.jpg') }}" alt="SBC Logo" 
                   class="img-fluid" style="max-height: 200px; border-radius: 0.5rem;">
             </div>
 

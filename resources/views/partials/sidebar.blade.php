@@ -76,6 +76,38 @@
       </li>
     @endrole
 
+    {{-- Ejournals --}}
+    <li class="menu-item {{ request()->routeIs('ejournals.index') ? 'active open' : '' }}">
+      <a href="{{ route('ejournals.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-notebook"></i>
+        <div data-i18n="E-Journals">E-Journals</div>
+      </a>
+    </li>
+
+    {{-- Ebooks --}}
+    <li class="menu-item {{ request()->routeIs('ebooks.index') ? 'active open' : '' }}">
+      <a href="{{ route('ebooks.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-book"></i>
+        <div data-i18n="E-Books">E-Books</div>
+      </a>
+    </li>
+
+    {{-- News and magazine --}}
+    <li class="menu-item {{ request()->routeIs('news&magazine.index') ? 'active open' : '' }}">
+      <a href="{{ route('news&magazine.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-news"></i>
+        <div data-i18n="News & Magazine">News & Magazine</div>
+      </a>
+    </li>
+
+    {{-- OER --}}
+    <li class="menu-item {{ request()->routeIs('oer.index') ? 'active open' : '' }}">
+      <a href="{{ route('oer.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-school"></i>
+        <div data-i18n="OER">OER</div>
+      </a>
+    </li>
+
     {{-- Browse books (Visible for all roles) --}}
     <li class="menu-item {{ request()->is('browsebook*') ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

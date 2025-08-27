@@ -8,6 +8,10 @@ use App\Http\Controllers\BooksManagement\BooksManagementController;
 use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\BrowseBook\BrowseBookController;
 use App\Http\Controllers\BooksManagement\BorrowBooksController;
+use App\Http\Controllers\Ejournals\EjournalsController;
+use App\Http\Controllers\Ebooks\EbooksController;
+use App\Http\Controllers\NewsAndMagazine\NewsAndMagazineController;
+use App\Http\Controllers\OER\OERController;
 
 
 //  Root route - redirect to login
@@ -95,7 +99,21 @@ Route::middleware('auth')->group(function () {
         Route::get('/borrow-books-approved', [BorrowBooksController::class, 'ApprovedBorrowIndex'])->name('borrow-books.approved');
         Route::get('/json-approved', [BorrowBooksController::class, 'getApprovedBorrowedBooks'])->name('borrow-books.json.approved');
         Route::delete('/borrow-books/{id}/delete-approved', [BorrowBooksController::class, 'deleteApprovedBorrowedBook'])->name('borrow-books.delete-approved');
+    });
 
+    Route::group(['prefix' => 'ejournals'], function () {
+        Route::get('/', [EjournalsController::class, 'index'])->name('ejournals.index');
+    });
 
+    Route::group(['prefix' => 'ebooks'], function () {
+        Route::get('/', [EbooksController::class, 'index'])->name('ebooks.index');
+    });
+
+    Route::group(['prefix' => 'news&magazine'], function () {
+        Route::get('/', [NewsAndMagazineController::class, 'index'])->name('news&magazine.index');
+    });
+
+    Route::group(['prefix' => 'OER'], function () {
+        Route::get('/', [OERController::class, 'index'])->name('oer.index');
     });
 });
