@@ -103,6 +103,13 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'ejournals'], function () {
         Route::get('/', [EjournalsController::class, 'index'])->name('ejournals.index');
+        Route::get('/e-journal-list', [EjournalsController::class, 'list'])->name('ejournals.list');
+        Route::get('/get-data', [EjournalsController::class, 'getJournalData'])->name('ejournals.getData');
+        Route::get('/add-ejournal', [EjournalsController::class, 'addEjournal'])->name('ejournals.add');
+        Route::post('/store', [EjournalsController::class, 'store'])->name('ejournals.store');
+        Route::get('/{id}/edit', [EjournalsController::class, 'edit'])->name('ejournals.edit');
+        Route::put('/{id}', [EjournalsController::class, 'update'])->name('ejournals.update');
+        Route::delete('/{id}', [EjournalsController::class, 'destroy'])->name('ejournals.destroy');
     });
 
     Route::group(['prefix' => 'ebooks'], function () {

@@ -50,6 +50,7 @@
           </li>
         </ul>
       </li>
+
       {{-- Books Management --}}
       <li class="menu-item {{ request()->is('books-management*') || request()->is('borrow-books*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -70,6 +71,28 @@
           <li class="menu-item {{ request()->routeIs('borrow-books.approved') ? 'active' : '' }}">
             <a href="{{ route('borrow-books.approved') }}" class="menu-link">
               <div data-i18n="Approved Request">Approved Request</div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      {{-- Digital Resources --}}
+
+      {{-- E Journal Management --}}
+      <li class="menu-item {{ request()->is('ejournals*') ? 'active open' : '' }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon tf-icons ti ti-notebook"></i>
+          <div data-i18n="E-Journal Mgt.">E-Journal Mgt.</div>
+        </a>
+        <ul class="menu-sub">
+          <li class="menu-item {{ request()->routeIs('ejournals.list') ? 'active' : '' }}">
+            <a href="{{ route('ejournals.list') }}" class="menu-link">
+              <div data-i18n="List">List</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('ejournals.add') ? 'active' : '' }}">
+            <a href="{{ route('ejournals.add') }}" class="menu-link">
+              <div data-i18n="Add">Add</div>
             </a>
           </li>
         </ul>
