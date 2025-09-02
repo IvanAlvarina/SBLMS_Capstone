@@ -6,6 +6,12 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\UserManagement\UserManagementController;
 use App\Http\Controllers\BooksManagement\BooksManagementController;
 use App\Http\Controllers\Chatbot\ChatbotController;
+use App\Http\Controllers\BrowseBook\BrowseBookController;
+use App\Http\Controllers\BooksManagement\BorrowBooksController;
+use App\Http\Controllers\Ejournals\EjournalsController;
+use App\Http\Controllers\Ebooks\EbooksController;
+use App\Http\Controllers\NewsAndMagazine\NewsAndMagazineController;
+use App\Http\Controllers\OER\OERController;
 
 
 //  Root route - redirect to login
@@ -76,5 +82,45 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'chatbot'], function () {
         Route::get('/chat/start', [ChatbotController::class, 'start'])->name('chatbot.start');
         Route::post('/chat/next', [ChatbotController::class, 'next'])->name('chatbot.next');
+    });
+
+    //browse book
+    Route::group(['prefix' => 'browsebook'], function () {
+        Route::get('/browse-book', [BrowseBookController::class, 'index'])->name('browsebook.index');
+        Route::get('/book/{id}', [BrowseBookController::class, 'viewDetails'])->name('browsebook.show');
+        Route::post('/book/{id}/borrow', [BrowseBookController::class, 'borrow'])->name('browsebook.borrow');
+        Route::get('/my-borrows', [BrowseBookController::class, 'myBorrows'])->name('browsebook.myborrows');
+    });
+
+    Route::group(['prefix' => 'borrow-books'], function () {
+        Route::get('/borrow-books-pending', [BorrowBooksController::class, 'index'])->name('borrow-books.index');
+        Route::get('/json', [BorrowBooksController::class, 'getBorrowedBooks'])->name('borrow-books.json');
+        Route::put('/{id}/approve', [BorrowBooksController::class, 'approve'])->name('borrow-books.approve');
+        Route::get('/borrow-books-approved', [BorrowBooksController::class, 'ApprovedBorrowIndex'])->name('borrow-books.approved');
+        Route::get('/json-approved', [BorrowBooksController::class, 'getApprovedBorrowedBooks'])->name('borrow-books.json.approved');
+        Route::delete('/borrow-books/{id}/delete-approved', [BorrowBooksController::class, 'deleteApprovedBorrowedBook'])->name('borrow-books.delete-approved');
+    });
+
+    Route::group(['prefix' => 'ejournals'], function () {
+        Route::get('/', [EjournalsController::class, 'index'])->name('ejournals.index');
+        Route::get('/e-journal-list', [EjournalsController::class, 'list'])->name('ejournals.list');
+        Route::get('/get-data', [EjournalsController::class, 'getJournalData'])->name('ejournals.getData');
+        Route::get('/add-ejournal', [EjournalsController::class, 'addEjournal'])->name('ejournals.add');
+        Route::post('/store', [EjournalsController::class, 'store'])->name('ejournals.store');
+        Route::get('/{id}/edit', [EjournalsController::class, 'edit'])->name('ejournals.edit');
+        Route::put('/{id}', [EjournalsController::class, 'update'])->name('ejournals.update');
+        Route::delete('/{id}', [EjournalsController::class, 'destroy'])->name('ejournals.destroy');
+    });
+
+    Route::group(['prefix' => 'ebooks'], function () {
+        Route::get('/', [EbooksController::class, 'index'])->name('ebooks.index');
+    });
+
+    Route::group(['prefix' => 'news&magazine'], function () {
+        Route::get('/', [NewsAndMagazineController::class, 'index'])->name('news&magazine.index');
+    });
+
+    Route::group(['prefix' => 'OER'], function () {
+        Route::get('/', [OERController::class, 'index'])->name('oer.index');
     });
 });

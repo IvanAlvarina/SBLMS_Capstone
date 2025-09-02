@@ -33,18 +33,19 @@
                  data-bs-ride="carousel" data-bs-interval="4000">
                 
                 <div class="carousel-inner h-100">
-                    <div class="carousel-item active">
-                        <img src="{{ asset('storage/assets/wallpaper.jpg') }}" alt="Slide 1">
+                   <div class="carousel-item active">
+                        <img src="{{ asset('assets/bgpicture/wallpaper.jpg') }}" alt="Slide 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper2.jpg') }}" alt="Slide 2">
+                        <img src="{{ asset('assets/bgpicture/wallpaper2.jpg') }}" alt="Slide 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper3.jpg') }}" alt="Slide 3">
+                        <img src="{{ asset('assets/bgpicture/wallpaper3.jpg') }}" alt="Slide 3">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('storage/assets/wallpaper4.jpg') }}" alt="Slide 4">
+                        <img src="{{ asset('assets/bgpicture/wallpaper4.jpg') }}" alt="Slide 4">
                     </div>
+
                 </div>
 
                 <!-- Controls -->
@@ -108,7 +109,7 @@
                            class="form-control @error('student_no') is-invalid @enderror"
                            id="username"
                            name="username"
-                           placeholder="Enter your student no. eg: 22-0066-927"
+                           placeholder="Enter your student no. or faculty no."
                            autofocus required />
                     @error('student_no')
                         <div class="invalid-feedback">{{ $message }}</div>

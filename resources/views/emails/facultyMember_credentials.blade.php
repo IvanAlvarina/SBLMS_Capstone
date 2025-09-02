@@ -63,14 +63,14 @@
 </head>
 <body>
     <div class="email-container">
-        <h1>Welcome to SBLMS Faculty Portal!</h1>
+        <h1>Welcome to SBLMS!</h1>
 
         <p>Dear {{ $fullname }},</p>
 
-        <p>Your faculty account has been successfully created and approved 🎉. You can now access the SBLMS Faculty Portal using the credentials below:</p>
+        <p>Your faculty account has been successfully created and approved 🎉. You can now access the SBLMS using the credentials below:</p>
 
         <div class="credentials">
-            <p><strong>Faculty No:</strong> {{ $faculty_no }} <em>(use this to login)</em></p>
+            <p><strong>Faculty No:</strong> {{ $faculty_no }}</p>
             <p><strong>Password:</strong> {{ $password }}</p>
         </div>
 
@@ -78,14 +78,6 @@
             <p><strong>Important Security Notice:</strong></p>
             <p>For your account security, please log in and change your password immediately after your first login. Your temporary password should not be shared with anyone.</p>
         </div>
-
-        <p>As a faculty member, you now have access to:</p>
-        <ul>
-            <li>Course management tools</li>
-            <li>Student information systems</li>
-            <li>Academic resources and materials</li>
-            <li>Faculty communication portal</li>
-        </ul>
 
         <p>If you have any questions or need assistance with your account, please don't hesitate to contact our support team.</p>
 

@@ -48,7 +48,7 @@
                 <!-- / Style Switcher-->
 
                 <!-- Quick links  -->
-                <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+                {{-- <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                   <a
                     class="nav-link dropdown-toggle hide-arrow"
                     href="javascript:void(0);"
@@ -138,7 +138,7 @@
                       </div>
                     </div>
                   </div>
-                </li>
+                </li> --}}
                 <!-- Quick links -->
 
                 <!-- Notification -->
@@ -201,8 +201,19 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">{{ auth()->user()->student_no }}</span>
-                            {{-- <small class="text-muted">Admin</small> --}}
+                              <span class="fw-medium d-block">
+                                  @if(auth()->user()->role === 'Student')
+                                      {{ auth()->user()->student_no ?? 'N/A' }}
+                                  @elseif(auth()->user()->role === 'Faculty')
+                                      {{ auth()->user()->faculty_no ?? 'N/A' }}
+                                  @else
+                                      {{ auth()->user()->name }}
+                                  @endif
+                              </span>
+
+                              <small class="text-muted">
+                                  {{ auth()->user()->role ?? 'User' }}
+                              </small>
                           </div>
                         </div>
                       </a>
