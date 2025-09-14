@@ -209,10 +209,15 @@ class BorrowBooksController extends Controller
         $data = [];
         foreach ($borrowedBooks as $borrow) {
             // Role badge inline HTML
-            $roleHtml = '<span class="badge '.
-                ($borrow->user->role === 'Student' ? 'bg-primary' :
-                ($borrow->user->role === 'Faculty' ? 'bg-success' : 'bg-secondary')).'">'.
-                ($borrow->user->role ?? 'User').'</span>';
+            if ($borrow->user) {
+                $roleHtml = '<span class="badge '.
+                    ($borrow->user->role === 'Student' ? 'bg-primary' :
+                    ($borrow->user->role === 'Faculty' ? 'bg-success' : 'bg-secondary')).'">'.
+                    $borrow->user->role.'</span>';
+            } else {
+                $roleHtml = '<span class="badge bg-secondary">N/A</span>';
+            }
+
 
             // Check if due date has passed or is today
             $canComplete = false;
