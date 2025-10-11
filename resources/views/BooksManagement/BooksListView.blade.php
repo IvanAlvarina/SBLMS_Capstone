@@ -13,6 +13,30 @@
 
 @push('page-styles')
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+
+<style>
+/* Pagination buttons design */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #1e1e2d !important;  /* match your table dark theme */
+    color: #fff !important;
+    border: none;
+    padding: 5px 12px;
+    margin: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #0d6efd !important; /* current page blue */
+    color: #fff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #2a2a3c !important;
+    color: #fff !important;
+}
+</style>
 @endpush
 
 <div class="card-datatable table-responsive pt-0">
@@ -37,12 +61,15 @@
 
 @push('page-scripts')
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 
 <script>
 function formatISBN(isbn) {
     if (!isbn) return '';
     let digits = isbn.replace(/[-\s]/g, '');
-
     if (digits.length === 10) {
         return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
     } else if (digits.length === 13) {
@@ -74,107 +101,71 @@ $(function () {
                 { data: 'book_author' },
                 { data: 'book_genre' },
                 { data: 'book_yearpub' },
-                { 
-                    data: 'book_isbn', 
-                    render: function(data, type, row) {
-                        return formatISBN(data);
-                    }
-                },
+                { data: 'book_isbn', render: function(data) { return formatISBN(data); } },
                 { data: 'book_status' },
                 {
                     data: 'book_cimage',
-                    render: function(data, type, row) {
+                    render: function(data) {
                         if (data) {
                             let imageUrl = '{{ asset("assets") }}/' + data;
-                            return '<img src="' + imageUrl + '" alt="Book Cover" style="height: 60px; width: auto; border-radius: 4px;">';
+                            return '<img src="' + imageUrl + '" alt="Book Cover" style="height:60px;width:auto;border-radius:4px;">';
                         } else {
                             return '<span class="text-muted">No Image</span>';
                         }
                     }
                 },
-                {   // ✅ Action Dropdown only
+                {
                     data: null,
                     orderable: false,
                     searchable: false,
                     render: function (data, type, row) {
-                        return `
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-light dropdown-toggle" 
-                                        type="button" 
-                                        id="dropdownMenuButton${row.book_id}" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-expanded="false">
-                                    <i class="ti ti-dots-vertical"></i>
+                        let actions = '';
+                        if (row.book_status === 'Removed') {
+                            actions = `<li>
+                                <button class="dropdown-item text-success restore-btn" data-id="${row.book_id}">
+                                    <i class="ti ti-refresh me-1"></i> Restore
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton${row.book_id}">
-                                    <li>
-                                        <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
-                                            <i class="ti ti-edit me-1"></i> Edit
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
-                                            <i class="ti ti-trash me-1"></i> Delete
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        `;
+                            </li>`;
+                        } else {
+                            actions = `<li>
+                                <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
+                                    <i class="ti ti-edit me-1"></i> Edit
+                                </a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
+                                    <i class="ti ti-trash me-1"></i> Remove
+                                </button>
+                            </li>`;
+                        }
+
+                        return `<div class="dropdown">
+                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                ${actions}
+                            </ul>
+                        </div>`;
                     }
                 }
             ],
             dom: '<"card-header flex-column flex-md-row align-items-center"<"head-label text-center"><"dt-filter-status me-auto"><"dt-action-buttons text-end"B>>' +
-                '<"row"<"col-sm-14 col-md-6"l><"col-sm-14 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
-                't<"row"<"col-sm-14 col-md-6"i><"col-sm-14 col-md-6"p>>',
+                 '<"row"<"col-sm-14 col-md-6"l><"col-sm-14 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
+                 't<"row"<"col-sm-14 col-md-6"i><"col-sm-14 col-md-6"p>>',
             buttons: [
                 {
                     extend: 'collection',
                     className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
                     text: '<i class="ti ti-file-export me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
                     buttons: [
-                        {
-                            extend: 'excelHtml5',
-                            className: 'btn btn-success',
-                            text: 'Export to Excel',
-                            title: 'Books List',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            className: 'btn btn-danger',
-                            text: 'Export to PDF',
-                            title: 'Books List',
-                            orientation: 'landscape',
-                            pageSize: 'A4',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        }
+                        { extend: 'excelHtml5', className: 'btn btn-success', text: 'Export to Excel', title: 'Books List', exportOptions: { columns: ':visible' } },
+                        { extend: 'pdfHtml5', className: 'btn btn-danger', text: 'Export to PDF', title: 'Books List', orientation: 'landscape', pageSize: 'A4', exportOptions: { columns: ':visible' } }
                     ]
                 },
-                {
-                    text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add Book</span>',
-                    className: 'btn btn-primary waves-effect waves-light me-2',
-                    action: function () {
-                        window.location.href = '{{ route("books-management.create") }}';
-                    }
-                },
-                {
-                    text: '<i class="ti ti-camera me-sm-1"></i> <span class="d-none d-sm-inline-block">Add Book (OCR)</span>',
-                    className: 'btn btn-secondary waves-effect waves-light me-2',
-                    action: function () {
-                        window.location.href = '{{ route("books-management.ocr") }}';
-                    }
-                },
-                {
-                    text: '<i class="ti ti-barcode me-sm-1"></i> <span class="d-none d-sm-inline-block">Add Book (ISBN)</span>',
-                    className: 'btn btn-info waves-effect waves-light',
-                    action: function () {
-                        window.location.href = '{{ route("books-management.isbnscanner") }}';
-                    }
-                }
+                { text: '<i class="ti ti-plus me-sm-1"></i> Add Book', className: 'btn btn-primary waves-effect waves-light me-2', action: () => window.location.href='{{ route("books-management.create") }}' },
+                { text: '<i class="ti ti-camera me-sm-1"></i> Add Book (OCR)', className: 'btn btn-secondary waves-effect waves-light me-2', action: () => window.location.href='{{ route("books-management.ocr") }}' },
+                { text: '<i class="ti ti-barcode me-sm-1"></i> Add Book (ISBN)', className: 'btn btn-info waves-effect waves-light', action: () => window.location.href='{{ route("books-management.isbnscanner") }}' }
             ],
             responsive: true,
             processing: true,
@@ -182,18 +173,19 @@ $(function () {
             pageLength: 10
         });
 
-        // Status filter
+        // Status filter dropdown
         $('div.dt-filter-status').html(` 
-            <label for="status-filter" class="me-2 mb-0" style="line-height: 38px;">Filter by Status:</label>
-            <select id="status-filter" class="form-select form-select-sm" style="width: 180px; display: inline-block;">
+            <label for="status-filter" class="me-2 mb-0" style="line-height:38px;">Filter by Status:</label>
+            <select id="status-filter" class="form-select form-select-sm" style="width:200px; display:inline-block;">
                 <option value="active" selected>Active Books</option>
-                <option value="removed">Removed Books</option>
-                <option value="all">All Books</option>
+                <option value="Available">Available</option>
+                <option value="Borrowed">Borrowed</option>
+                <option value="Reserved">Reserved</option>
             </select>
         `);
 
         $('#status-filter').on('change', function () {
-            table.ajax.reload(null, false);
+            table.ajax.reload();
         });
     }
 });
@@ -201,7 +193,6 @@ $(function () {
 // Delete (soft delete)
 $(document).on('click', '.delete-btn', function () {
     let bookId = $(this).data('id');
-
     Swal.fire({
         title: 'Are you sure?',
         text: "This book will be marked as Removed.",
@@ -209,42 +200,44 @@ $(document).on('click', '.delete-btn', function () {
         showCancelButton: true,
         confirmButtonText: 'Yes, remove it!',
         cancelButtonText: 'Cancel',
-        customClass: {
-            confirmButton: 'btn btn-danger me-2',
-            cancelButton: 'btn btn-label-secondary'
-        },
+        customClass: { confirmButton: 'btn btn-danger me-2', cancelButton: 'btn btn-label-secondary' },
         buttonsStyling: false
-    }).then(function (result) {
+    }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 url: '/books-management/' + bookId,
                 type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Removed!',
-                            text: 'The book has been removed.',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
-                        $('.datatables-basic').DataTable().ajax.reload(null, false);
-                    }
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Something went wrong. Please try again.',
-                        customClass: {
-                            confirmButton: 'btn btn-danger'
-                        }
-                    });
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    Swal.fire({ icon:'success', title:'Removed!', text:'The book has been removed.', customClass:{confirmButton:'btn btn-success'} });
+                    $('.datatables-basic').DataTable().ajax.reload();
+                }
+            });
+        }
+    });
+});
+
+// Restore
+$(document).on('click', '.restore-btn', function () {
+    let bookId = $(this).data('id');
+    Swal.fire({
+        title: 'Restore Book?',
+        text: "This will mark the book as Available again.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, restore it!',
+        cancelButtonText: 'Cancel',
+        customClass: { confirmButton: 'btn btn-success me-2', cancelButton: 'btn btn-label-secondary' },
+        buttonsStyling: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/books-management/' + bookId + '/restore',
+                type: 'PATCH',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    Swal.fire({ icon:'success', title:'Restored!', text:'The book has been restored.', customClass:{confirmButton:'btn btn-success'} });
+                    $('.datatables-basic').DataTable().ajax.reload();
                 }
             });
         }

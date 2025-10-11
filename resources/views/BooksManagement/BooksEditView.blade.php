@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 <div class="card">
     <div class="card-body">
         <form id="edit-book-form" action="{{ route('books-management.update', $book->book_id) }}" method="POST" enctype="multipart/form-data">
@@ -31,12 +30,17 @@
 
                     <div class="mb-3">
                         <label for="book_yearpub" class="form-label">Date Published</label>
-                        <input type="date" name="book_yearpub" class="form-control" value="{{ old('book_yearpub', \Carbon\Carbon::parse($book->book_yearpub)->format('Y-m-d')) }}">
+                        <input type="date" name="book_yearpub" class="form-control" 
+                               value="{{ old('book_yearpub', \Carbon\Carbon::parse($book->book_yearpub)->format('Y-m-d')) }}" 
+                               max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                     </div>
 
                     <div class="mb-3">
                         <label for="book_isbn" class="form-label">ISBN</label>
-                        <input type="text" name="book_isbn" id="book_isbn" class="form-control" value="{{ old('book_isbn', $book->book_isbn) }}" maxlength="17" pattern="(?:\d{3}-)?\d{1,5}-\d{1,7}-\d{1,7}-[\dX]{1}" title="ISBN must be either 10 or 13 digits, with optional hyphens">
+                        <input type="text" name="book_isbn" id="book_isbn" class="form-control" 
+                               value="{{ old('book_isbn', $book->book_isbn) }}" maxlength="17" 
+                               pattern="(?:\d{3}-)?\d{1,5}-\d{1,7}-\d{1,7}-[\dX]{1}" 
+                               title="ISBN must be either 10 or 13 digits, with optional hyphens">
                     </div>
 
                     <div class="mb-3">
@@ -62,7 +66,6 @@
                         <img id="cover-preview" src="{{ asset('assets/' . $book->book_cimage) }}" alt="Book Cover" style="max-width: 100%; max-height: 300px; border-radius: 6px; border: 1px solid #ddd; padding: 4px;">
                         <div id="cover-placeholder" style="display:none;"></div>
                     @else
-                        <!-- Question mark icon as placeholder -->
                         <div id="cover-placeholder" style="width: 150px; height: 200px; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #999; background: #f8f9fa;">
                             ?
                         </div>
@@ -80,25 +83,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-// Function to format ISBN (ISBN-10 or ISBN-13)
 function formatISBN(isbn) {
-    if (!isbn) return ''; // Return empty string if no ISBN
-
-    // Remove any existing hyphens or spaces
+    if (!isbn) return '';
     let digits = isbn.replace(/[-\s]/g, '');
-
-    if (digits.length === 10) {
-        // Format ISBN-10: 1-234-56789-X
-        return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
-    } else if (digits.length === 13) {
-        // Format ISBN-13: 978-1-23-456789-0
-        return digits.replace(/(\d{3})(\d{1})(\d{2})(\d{6})(\d{1})/, '$1-$2-$3-$4-$5');
-    } else {
-        return isbn; // Return raw if length is not 10 or 13
-    }
+    if (digits.length === 10) return digits.replace(/(\d{1})(\d{3})(\d{5})(\d{1})/, '$1-$2-$3-$4');
+    else if (digits.length === 13) return digits.replace(/(\d{3})(\d{1})(\d{2})(\d{6})(\d{1})/, '$1-$2-$3-$4-$5');
+    else return isbn;
 }
 
-// Listen for input changes on the ISBN field to format the ISBN
 document.getElementById('book_isbn').addEventListener('input', function() {
     this.value = formatISBN(this.value);
 });
@@ -123,7 +115,6 @@ document.getElementById('edit-book-form').addEventListener('submit', function(e)
     });
 });
 
-// Live preview for Edit form cover image input
 document.querySelector('input[name="book_cimage"]').addEventListener('change', function(event) {
     const fileInput = event.target;
     const preview = document.getElementById('cover-preview');
@@ -131,16 +122,13 @@ document.querySelector('input[name="book_cimage"]').addEventListener('change', f
 
     if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
-
         reader.onload = function(e) {
             preview.src = e.target.result;
             preview.style.display = 'block';
             placeholder.style.display = 'none';
         }
-
         reader.readAsDataURL(fileInput.files[0]);
     } else {
-        // If no file selected, revert to initial display
         @if($book->book_cimage)
             preview.src = "{{ asset('assets/' . $book->book_cimage) }}";
             preview.style.display = 'block';

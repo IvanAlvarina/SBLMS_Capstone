@@ -63,6 +63,13 @@
               <div data-i18n="Books List">Books List</div>
             </a>
           </li>
+
+          <li class="menu-item {{ request()->routeIs('books-management.removed') ? 'active' : '' }}">
+          <a href="{{ route('books-management.removed') }}" class="menu-link">
+            <div data-i18n="Books Removed">Books Removed</div>
+          </a>
+        </li>
+        
           <li class="menu-item {{ request()->routeIs('borrow-books.index') ? 'active' : '' }}">
             <a href="{{ route('borrow-books.index') }}" class="menu-link">
               <div data-i18n="Pending Borrows">Pending Borrows</div>

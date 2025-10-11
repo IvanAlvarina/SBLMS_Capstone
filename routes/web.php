@@ -60,14 +60,19 @@ Route::middleware('auth')->group(function () {
 
 
      // Books Management
-    Route::group(['prefix' => 'books-management'], function () {
-    Route::get('/', [BooksManagementController::class, 'index'])->name('books-management.index');
-    Route::get('/json', [BooksManagementController::class, 'getBooks'])->name('books-management.json');
-    Route::get('/create', [BooksManagementController::class, 'create'])->name('books-management.create');
-    Route::post('/', [BooksManagementController::class, 'store'])->name('books-management.store');
-    Route::get('/{book_id}/edit', [BooksManagementController::class, 'edit'])->name('books-management.edit');
-    Route::put('/{book_id}', [BooksManagementController::class, 'update'])->name('books-management.update');
-    Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy'); // ✅ fixed
+     Route::group(['prefix' => 'books-management'], function () {
+        Route::get('/', [BooksManagementController::class, 'index'])->name('books-management.index');
+        Route::get('/json', [BooksManagementController::class, 'getBooks'])->name('books-management.json');
+        Route::get('/create', [BooksManagementController::class, 'create'])->name('books-management.create');
+        Route::post('/', [BooksManagementController::class, 'store'])->name('books-management.store');
+        Route::get('/{book_id}/edit', [BooksManagementController::class, 'edit'])->name('books-management.edit');
+        Route::put('/{book_id}', [BooksManagementController::class, 'update'])->name('books-management.update');
+        Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy');
+        Route::patch('/{book_id}/restore', [BooksManagementController::class, 'restore'])->name('books-management.restore');
+
+        // Removed Books
+        Route::get('/removed', [BooksManagementController::class, 'removedView'])->name('books-management.removed');
+        Route::get('/json-removed', [BooksManagementController::class, 'getRemovedBooks'])->name('books-management.json.removed');
     Route::get('/books-management/ocr', [BooksManagementController::class, 'ocrCreate'])->name('books-management.ocr');
     Route::get('/books-management/isbnscanner', [BooksManagementController::class, 'isbnScannerCreate'])->name('books-management.isbnscanner');
 
