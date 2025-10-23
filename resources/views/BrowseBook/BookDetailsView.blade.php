@@ -109,6 +109,10 @@
           <p class="detail-label mb-1"><i class="ti ti-building me-1"></i> Publisher</p>
           <p>{{ $book->book_author ?? 'N/A' }}</p>
         </div>
+        <div class="col-md-6 mb-3">
+          <p class="detail-label mb-1"><i class="ti ti-tag me-1"></i> Dewey Classification</p>
+          <p>{{ $book->dewey_classification ?? 'N/A' }}</p>
+        </div>
       </div>
     </div>
 

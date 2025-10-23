@@ -36,6 +36,29 @@
     background-color: #2a2a3c !important;
     color: #fff !important;
 }
+
+/* Fix dropdown scrollbar */
+.dropdown-menu {
+    overflow: visible !important;
+    position: absolute !important;
+    z-index: 1050 !important;
+}
+
+.dropdown-toggle {
+    overflow: visible !important;
+}
+
+.book-cover-lg {
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 1rem;
+    width: 100%;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #5e5873;
+}
 </style>
 @endpush
 
@@ -45,16 +68,82 @@
             <tr>
                 <th>Book ID</th>
                 <th>Book Title</th>
-                <th>Book Author</th>
                 <th>Book Genre</th>
-                <th>Book Date of Publish</th>
-                <th>Book ISBN</th>
                 <th>Book Status</th>
-                <th>Book Cover Image</th>
                 <th>Action</th>
             </tr>
         </thead>
     </table>
+</div>
+
+<!-- View Book Modal -->
+<div class="modal fade" id="viewBookModal" tabindex="-1" aria-labelledby="viewBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewBookModalLabel"><i class="ti ti-book me-2"></i>Book Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <!-- Left: Book Cover -->
+                    <div class="col-md-4 text-center">
+                        <div id="book-image">
+                            <img id="book-cover" src="" alt="Book Cover" class="book-cover-lg mb-3">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="#" id="edit-book-btn" class="btn btn-sm btn-primary">
+                                <i class="ti ti-edit me-1"></i> Edit Book
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Book Info -->
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2" id="modal-book-title"></h2>
+                        <p class="text-muted mb-4">by <span class="fw-semibold" id="modal-book-author"></span></p>
+
+                        <div class="mb-3">
+                            <span class="badge bg-label-primary px-3 py-2 me-2" id="modal-book-genre">
+                                <i class="ti ti-category me-1"></i>
+                            </span>
+                            <span class="badge bg-label-success px-3 py-2" id="modal-book-status">
+                                <i class="ti ti-check me-1"></i>
+                            </span>
+                        </div>
+
+                        <hr>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <p class="detail-label mb-1"><i class="ti ti-barcode me-1"></i> Book ID</p>
+                                <p id="book-id"></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <p class="detail-label mb-1"><i class="ti ti-building me-1"></i> Location</p>
+                                <p id="book-location"></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <p class="detail-label mb-1"><i class="ti ti-tag me-1"></i> Dewey Classification</p>
+                                <p id="book-dewey"></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <p class="detail-label mb-1"><i class="ti ti-calendar me-1"></i> Year Published</p>
+                                <p id="book-yearpub"></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <p class="detail-label mb-1"><i class="ti ti-hash me-1"></i> ISBN</p>
+                                <p id="book-isbn"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ti ti-x me-1"></i>Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -96,63 +185,40 @@ $(function () {
                 }
             },
             columns: [
-                { data: 'book_id' },
-                { data: 'book_title' },
-                { data: 'book_author' },
-                { data: 'book_genre' },
-                { data: 'book_yearpub' },
-                { data: 'book_isbn', render: function(data) { return formatISBN(data); } },
-                { data: 'book_status' },
-                {
-                    data: 'book_cimage',
-                    render: function(data) {
-                        if (data) {
-                            let imageUrl = '{{ asset("assets") }}/' + data;
-                            return '<img src="' + imageUrl + '" alt="Book Cover" style="height:60px;width:auto;border-radius:4px;">';
-                        } else {
-                            return '<span class="text-muted">No Image</span>';
-                        }
-                    }
-                },
+                { data: 'book_id', className: 'text-center', width: '80px' },
+                { data: 'book_title', width: '300px' },
+                { data: 'book_genre', width: '150px' },
+                { data: 'book_status', className: 'text-center', width: '120px' },
                 {
                     data: null,
                     orderable: false,
                     searchable: false,
                     render: function (data, type, row) {
-                        let actions = '';
                         if (row.book_status === 'Removed') {
-                            actions = `<li>
-                                <button class="dropdown-item text-success restore-btn" data-id="${row.book_id}">
+                            return `<div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-success restore-btn" data-id="${row.book_id}">
                                     <i class="ti ti-refresh me-1"></i> Restore
                                 </button>
-                            </li>`;
+                            </div>`;
                         } else {
-                            actions = `<li>
-                                <a class="dropdown-item" href="/books-management/${row.book_id}/edit">
+                            return `<div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-info view-btn" data-id="${row.book_id}">
+                                    <i class="ti ti-eye me-1"></i> View
+                                </button>
+                                <a class="btn btn-sm btn-primary" href="/books-management/${row.book_id}/edit">
                                     <i class="ti ti-edit me-1"></i> Edit
                                 </a>
-                            </li>
-                            <li>
-                                <button class="dropdown-item text-danger delete-btn" data-id="${row.book_id}">
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${row.book_id}">
                                     <i class="ti ti-trash me-1"></i> Remove
                                 </button>
-                            </li>`;
+                            </div>`;
                         }
-
-                        return `<div class="dropdown">
-                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="ti ti-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                ${actions}
-                            </ul>
-                        </div>`;
                     }
                 }
             ],
             dom: '<"card-header flex-column flex-md-row align-items-center"<"head-label text-center"><"dt-filter-status me-auto"><"dt-action-buttons text-end"B>>' +
-                 '<"row"<"col-sm-14 col-md-6"l><"col-sm-14 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
-                 't<"row"<"col-sm-14 col-md-6"i><"col-sm-14 col-md-6"p>>',
+                 '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
+                 't<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
             buttons: [
                 {
                     extend: 'collection',
@@ -167,10 +233,17 @@ $(function () {
                 { text: '<i class="ti ti-camera me-sm-1"></i> Add Book (OCR)', className: 'btn btn-secondary waves-effect waves-light me-2', action: () => window.location.href='{{ route("books-management.ocr") }}' },
                 { text: '<i class="ti ti-barcode me-sm-1"></i> Add Book (ISBN)', className: 'btn btn-info waves-effect waves-light', action: () => window.location.href='{{ route("books-management.isbnscanner") }}' }
             ],
-            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
             processing: true,
             serverSide: true,
-            pageLength: 10
+            pageLength: 10,
+            scrollX: true,
+            autoWidth: false
         });
 
         // Status filter dropdown
@@ -239,6 +312,46 @@ $(document).on('click', '.restore-btn', function () {
                     Swal.fire({ icon:'success', title:'Restored!', text:'The book has been restored.', customClass:{confirmButton:'btn btn-success'} });
                     $('.datatables-basic').DataTable().ajax.reload();
                 }
+            });
+        }
+    });
+});
+
+// View Book Details
+$(document).on('click', '.view-btn', function () {
+    let bookId = $(this).data('id');
+
+    $.ajax({
+        url: '/books-management/' + bookId + '/details',
+        type: 'GET',
+        success: function(response) {
+            $('#modal-book-title').text(response.book_title);
+            $('#modal-book-author').text(response.book_author);
+            $('#modal-book-genre').html('<i class="ti ti-category me-1"></i> ' + (response.book_genre || 'Uncategorized'));
+            $('#modal-book-status').html('<i class="ti ti-check me-1"></i> ' + response.book_status);
+            $('#book-id').text(response.book_id);
+            $('#book-location').text(response.book_location);
+            $('#book-dewey').text(response.dewey_classification || 'Not classified');
+            $('#book-yearpub').text(response.book_yearpub);
+            $('#book-isbn').text(formatISBN(response.book_isbn));
+
+            // Update edit button href
+            $('#edit-book-btn').attr('href', '/books-management/' + bookId + '/edit');
+
+            if (response.book_cimage) {
+                $('#book-cover').attr('src', '{{ asset("assets") }}/' + response.book_cimage);
+                $('#book-image').show();
+            } else {
+                $('#book-image').hide();
+            }
+
+            $('#viewBookModal').modal('show');
+        },
+        error: function(xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load book details.'
             });
         }
     });

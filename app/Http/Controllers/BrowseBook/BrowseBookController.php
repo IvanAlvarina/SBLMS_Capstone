@@ -23,6 +23,14 @@ class BrowseBookController extends Controller
             });
         }
 
+        if ($request->has('genre') && !empty($request->genre)) {
+            $query->where('book_genre', $request->genre);
+        }
+
+        if ($request->has('dewey') && !empty($request->dewey)) {
+            $query->where('dewey_classification', 'LIKE', $request->dewey . '%');
+        }
+
         $books = $query->paginate(12);
 
         // Get current user's pending/approved borrow requests

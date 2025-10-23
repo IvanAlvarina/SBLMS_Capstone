@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/{book_id}', [BooksManagementController::class, 'update'])->name('books-management.update');
         Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy');
         Route::patch('/{book_id}/restore', [BooksManagementController::class, 'restore'])->name('books-management.restore');
+        Route::get('/{book_id}/details', [BooksManagementController::class, 'details'])->name('books-management.details');
 
         // Removed Books
         Route::get('/removed', [BooksManagementController::class, 'removedView'])->name('books-management.removed');

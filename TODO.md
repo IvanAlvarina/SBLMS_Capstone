@@ -1,0 +1,26 @@
+- [x] Create migration to add book_location column to books_lists table
+- [x] Update BooksManagementController store method to validate and save book_location
+- [x] Update BooksListView.blade.php to include location column and improve table design (responsive, compact)
+- [x] Run the migration
+- [x] Update Book List to show only: Book ID, Book Title, Book Genre, Book Status, Action
+- [x] Add View option in Action field with modal containing all book information
+- [x] Remove scrollbar from action button dropdown
+- [x] Make modal appealing: information in text fields, book cover on right side
+- [x] Remove Date Added from modal
+- [x] Update modal to match BookDetailsView.blade.php design
+- [x] Change action buttons from dropdown to inline buttons
+- [x] Fix button alignment with flexbox for horizontal layout
+- [x] Update BooksRemovedView.blade.php to match the same list design with inline Restore button
+- [x] Create migration to add dewey_classification column to books_lists table
+- [x] Update BooksManagementController to handle dewey_classification in store and update methods
+- [x] Add Dewey Decimal Classification field to BooksCreateView.blade.php
+- [x] Add Dewey Decimal Classification field to BooksOcrCreateView.blade.php
+- [x] Update BooksListView.blade.php to include Dewey column in modal
+- [x] Update BooksRemovedView.blade.php to include Dewey column in table
+- [x] Improve OCR preprocessing: Change to grayscale with contrast enhancement instead of B&W.
+- [x] Add Tesseract config options for better text detection (PSM 6, whitelist).
+- [x] Fix loading indicator visibility: Increase z-index, ensure opacity, add delay before hiding.
+- [x] Add console logs for OCR progress and results.
+- [x] Make BooksOcrCreateView.blade.php more appealing: Arrange fields in 2-column grid, remove "Book Cover Image Optional" label, show file size error in toast, make Scan buttons same width.
+- [ ] Test OCR functionality in browser: Simulate camera/upload, verify loading and field population.
+- [ ] Thorough testing: Form submission, validation, data storage, display in list, error handling

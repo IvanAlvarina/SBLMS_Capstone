@@ -9,77 +9,104 @@
 
         <form id="create-book-form" action="{{ route('books-management.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-
             <div class="row">
-                <!-- Left side: form fields -->
+                <!-- Left side: form fields in grid -->
                 <div class="col-md-8">
-                    <div class="mb-3">
-                        <label for="book_title" class="form-label">Title</label>
-                        <input type="text" name="book_title" class="form-control" 
-                               value="{{ old('book_title', request('title')) }}" required>
-                        @error('book_title') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="book_title" class="form-label">Title</label>
+                            <input type="text" name="book_title" class="form-control"
+                                   value="{{ old('book_title', request('title')) }}" required>
+                            @error('book_title') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="book_author" class="form-label">Author</label>
+                            <input type="text" name="book_author" class="form-control"
+                                   value="{{ old('book_author', request('author')) }}" required>
+                            @error('book_author') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="book_author" class="form-label">Author</label>
-                        <input type="text" name="book_author" class="form-control" 
-                               value="{{ old('book_author', request('author')) }}" required>
-                        @error('book_author') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="book_genre" class="form-label">Genre</label>
+                            @include('partials.genre-dropdown', ['selectedGenre' => old('book_genre')])
+                            @error('book_genre') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="book_location" class="form-label">Location</label>
+                            <select name="book_location" class="form-control" required>
+                                <option value="">Select Location</option>
+                                <option value="Elementary" {{ old('book_location') == 'Elementary' ? 'selected' : '' }}>Elementary</option>
+                                <option value="High School" {{ old('book_location') == 'High School' ? 'selected' : '' }}>High School</option>
+                                <option value="Senior High School" {{ old('book_location') == 'Senior High School' ? 'selected' : '' }}>Senior High School</option>
+                                <option value="College" {{ old('book_location') == 'College' ? 'selected' : '' }}>College</option>
+                            </select>
+                            @error('book_location') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="book_genre" class="form-label">Genre</label>
-                        @include('partials.genre-dropdown', ['selectedGenre' => old('book_genre')])
-                        @error('book_genre') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dewey_classification" class="form-label">Dewey Decimal Classification</label>
+                            <select name="dewey_classification" class="form-control">
+                                <option value="">Select Dewey Classification</option>
+                                <option value="000–099" {{ old('dewey_classification') == '000–099' ? 'selected' : '' }}>000–099: General Works</option>
+                                <option value="100–199" {{ old('dewey_classification') == '100–199' ? 'selected' : '' }}>100–199: Philosophy and Psychology</option>
+                                <option value="200–299" {{ old('dewey_classification') == '200–299' ? 'selected' : '' }}>200–299: Religion</option>
+                                <option value="300–399" {{ old('dewey_classification') == '300–399' ? 'selected' : '' }}>300–399: Social Sciences</option>
+                                <option value="400–499" {{ old('dewey_classification') == '400–499' ? 'selected' : '' }}>400–499: Language</option>
+                                <option value="500–599" {{ old('dewey_classification') == '500–599' ? 'selected' : '' }}>500–599: Natural Sciences and Mathematics</option>
+                                <option value="600–699" {{ old('dewey_classification') == '600–699' ? 'selected' : '' }}>600–699: Technology (Applied Sciences)</option>
+                                <option value="700–799" {{ old('dewey_classification') == '700–799' ? 'selected' : '' }}>700–799: The Arts</option>
+                                <option value="800–899" {{ old('dewey_classification') == '800–899' ? 'selected' : '' }}>800–899: Literature and Rhetoric</option>
+                                <option value="900–999" {{ old('dewey_classification') == '900–999' ? 'selected' : '' }}>900–999: Geography and History</option>
+                            </select>
+                            @error('dewey_classification') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="book_yearpub" class="form-label">Date Published</label>
+                            <input type="date" name="book_yearpub" class="form-control"
+                                   value="{{ old('book_yearpub') }}"
+                                   max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                            @error('book_yearpub') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="book_yearpub" class="form-label">Date Published</label>
-                        <input type="date" name="book_yearpub" class="form-control" 
-                               value="{{ old('book_yearpub') }}" 
-                               max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
-                        @error('book_yearpub') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="book_isbn" class="form-label">ISBN</label>
+                            <input type="text" name="book_isbn" id="book_isbn" class="form-control"
+                                   value="{{ old('book_isbn', request('isbn')) }}" maxlength="17"
+                                   pattern="(?:\d{3}-)?\d{1,5}-\d{1,7}-\d{1,7}-[\dX]{1}"
+                                   title="ISBN must be either 10 or 13 digits, with optional hyphens">
+                            @error('book_isbn') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status</label>
+                            <input type="hidden" name="book_status" value="Available">
+                            <span class="form-control-plaintext text-success">Available</span>
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="book_isbn" class="form-label">ISBN</label>
-                        <input type="text" name="book_isbn" id="book_isbn" class="form-control" 
-                               value="{{ old('book_isbn', request('isbn')) }}" maxlength="17" 
-                               pattern="(?:\d{3}-)?\d{1,5}-\d{1,7}-\d{1,7}-[\dX]{1}" 
-                               title="ISBN must be either 10 or 13 digits, with optional hyphens">
-                        @error('book_isbn') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="book_cimage" class="form-label">Book Cover Image (optional)</label>
-                        <input type="file" name="book_cimage" class="form-control" accept="image/*">
-                        @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <input type="hidden" name="book_status" value="Available">
-                        <span class="form-control-plaintext text-success">Available</span>
-                    </div>
+                    <input type="file" name="book_cimage" class="form-control" accept="image/*" style="display:none;">
+                    @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Right side: preview image -->
-                <div class="col-md-4 d-flex flex-column align-items-center justify-content-start">
-                    <label class="form-label mb-3">Book Cover Preview</label>
+                <!-- Right side: cover preview -->
+                <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                    <label class="form-label mb-2">Book Cover Preview</label>
+                    <img id="cover-preview" src="#" alt="Preview"
+                         style="max-width: 100%; max-height: 250px; border-radius: 6px; border: 1px solid #ddd; padding: 4px; display: none;">
 
-                    <img id="cover-preview" src="#" alt="Preview" 
-                         style="max-width: 100%; max-height: 300px; border-radius: 6px; border: 1px solid #ddd; padding: 4px; display: none;">
-
-                    <div id="cover-placeholder" 
-                         style="width: 150px; height: 200px; border: 1px solid #ddd; border-radius: 6px; 
-                                display: flex; align-items: center; justify-content: center; 
+                    <div id="cover-placeholder"
+                         style="width: 150px; height: 200px; border: 1px solid #ddd; border-radius: 6px;
+                                display: flex; align-items: center; justify-content: center;
                                 font-size: 48px; color: #999; background: #f8f9fa;">
                         ?
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-3">Add Book</button>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            </div>
         </form>
     </div>
 </div>

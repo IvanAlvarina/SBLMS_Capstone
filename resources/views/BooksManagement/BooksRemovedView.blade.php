@@ -23,12 +23,9 @@
             <tr>
                 <th>Book ID</th>
                 <th>Title</th>
-                <th>Author</th>
                 <th>Genre</th>
-                <th>Year Published</th>
-                <th>ISBN</th>
                 <th>Status</th>
-                <th>Cover</th>
+                <th>Dewey</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -73,33 +70,15 @@ $(function () {
         columns: [
             { data: 'book_id' },
             { data: 'book_title' },
-            { data: 'book_author' },
             { data: 'book_genre' },
-            { data: 'book_yearpub' },
-            { data: 'book_isbn', render: function(data) { return formatISBN(data); } },
             { data: 'book_status', orderable: false, searchable: false },
-            { data: 'book_cimage', render: function(data) {
-                if (data) {
-                    let imageUrl = '{{ asset("assets") }}/' + data;
-                    return `<img src="${imageUrl}" alt="Cover" style="height:60px;width:auto;border-radius:4px;">`;
-                }
-                return '<span class="text-muted">No Image</span>';
-            }, orderable: false, searchable: false },
+            { data: 'dewey_classification', orderable: false, searchable: false },
             { data: null, orderable: false, searchable: false, render: function(row) {
-                return `
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="ti ti-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <button class="dropdown-item text-success restore-btn" data-id="${row.book_id}">
-                                    <i class="ti ti-refresh me-1"></i> Restore
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                `;
+                return `<div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-success restore-btn" data-id="${row.book_id}">
+                        <i class="ti ti-refresh me-1"></i> Restore
+                    </button>
+                </div>`;
             }}
         ],
         dom: 'Bfrtip',

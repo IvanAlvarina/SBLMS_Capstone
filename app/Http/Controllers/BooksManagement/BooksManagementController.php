@@ -78,7 +78,7 @@ class BooksManagementController extends Controller
         if ($request->has('order')) {
             $orderColIndex = $request->input('order.0.column');
             $orderDir = $request->input('order.0.dir');
-            $columns = ['book_id', 'book_title', 'book_author', 'book_genre', 'book_yearpub', 'book_isbn', 'book_status', 'book_cimage', 'book_dateadded'];
+            $columns = ['book_id', 'book_title', 'book_author', 'book_genre', 'book_location', 'book_yearpub', 'book_isbn', 'book_status', 'book_cimage', 'book_dateadded'];
             $query->orderBy($columns[$orderColIndex], $orderDir);
         }
 
@@ -93,6 +93,7 @@ class BooksManagementController extends Controller
                 'book_title'    => $books->book_title,
                 'book_author'   => $books->book_author,
                 'book_genre'    => $books->book_genre,
+                'book_location' => $books->book_location,
                 'book_yearpub'  => $books->book_yearpub,
                 'book_isbn'     => $books->book_isbn,
                 'book_status'   => '<span class="badge ' .
@@ -140,6 +141,8 @@ class BooksManagementController extends Controller
             'book_title'    => 'required|string|max:255',
             'book_author'   => 'required|string|max:255',
             'book_genre'    => 'nullable|string|max:255',
+            'book_location' => 'required|string|max:255',
+            'dewey_classification' => 'nullable|string|max:255',
             'book_yearpub'  => 'nullable|date',
             'book_isbn'     => 'nullable|string|max:20',
             'book_status'   => 'required|in:Borrowed,Available,Reserved',
@@ -151,6 +154,8 @@ class BooksManagementController extends Controller
             $book->book_title  = $request->book_title;
             $book->book_author = $request->book_author;
             $book->book_genre  = $request->book_genre;
+            $book->book_location = $request->book_location;
+            $book->dewey_classification = $request->dewey_classification;
             $book->book_yearpub= $request->book_yearpub;
             $book->book_isbn   = $request->book_isbn;
             $book->book_status = $request->book_status;
@@ -204,12 +209,14 @@ class BooksManagementController extends Controller
             'book_isbn'     => 'nullable|string|max:20',
             'book_status'   => 'required|in:Borrowed,Available,Reserved,Removed',
             'book_cimage'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'dewey_classification' => 'nullable|string|max:255',
         ]);
 
         $book = BooksList::findOrFail($id);
         $book->book_title  = $request->book_title;
         $book->book_author = $request->book_author;
         $book->book_genre  = $request->book_genre;
+        $book->dewey_classification = $request->dewey_classification;
         $book->book_yearpub= $request->book_yearpub;
         $book->book_isbn   = $request->book_isbn;
         $book->book_status = $request->book_status;
@@ -273,5 +280,24 @@ class BooksManagementController extends Controller
     public function isbnScannerCreate()
     {
         return view('BooksManagement.BooksIsbnScannerCreateView');
+    }
+
+    // 📌 Get Book Details for Modal
+    public function details($id)
+    {
+        $book = BooksList::findOrFail($id);
+
+        return response()->json([
+            'book_id' => $book->book_id,
+            'book_title' => $book->book_title,
+            'book_author' => $book->book_author,
+            'book_genre' => $book->book_genre,
+            'book_location' => $book->book_location,
+            'dewey_classification' => $book->dewey_classification,
+            'book_yearpub' => $book->book_yearpub,
+            'book_isbn' => $book->book_isbn,
+            'book_status' => $book->book_status,
+            'book_cimage' => $book->book_cimage
+        ]);
     }
 }
