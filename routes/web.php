@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     });
 
 
-     // Books Management
+    // Books Management
      Route::group(['prefix' => 'books-management'], function () {
         Route::get('/', [BooksManagementController::class, 'index'])->name('books-management.index');
         Route::get('/json', [BooksManagementController::class, 'getBooks'])->name('books-management.json');
@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{book_id}', [BooksManagementController::class, 'destroy'])->name('books-management.destroy');
         Route::patch('/{book_id}/restore', [BooksManagementController::class, 'restore'])->name('books-management.restore');
         Route::get('/{book_id}/details', [BooksManagementController::class, 'details'])->name('books-management.details');
+        Route::get('/get-next-dewey-number', [BooksManagementController::class, 'getNextDeweyNumber'])->name('books-management.get-next-dewey-number');
 
         // Removed Books
         Route::get('/removed', [BooksManagementController::class, 'removedView'])->name('books-management.removed');
@@ -120,13 +121,34 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'ebooks'], function () {
         Route::get('/', [EbooksController::class, 'index'])->name('ebooks.index');
+        Route::get('/e-book-list', [EbooksController::class, 'list'])->name('ebooks.list');
+        Route::get('/get-data', [EbooksController::class, 'getEbookData'])->name('ebooks.getData');
+        Route::get('/add-ebook', [EbooksController::class, 'addEbook'])->name('ebooks.add');
+        Route::post('/store', [EbooksController::class, 'store'])->name('ebooks.store');
+        Route::get('/{id}/edit', [EbooksController::class, 'edit'])->name('ebooks.edit');
+        Route::put('/{id}', [EbooksController::class, 'update'])->name('ebooks.update');
+        Route::delete('/{id}', [EbooksController::class, 'destroy'])->name('ebooks.destroy');
     });
 
     Route::group(['prefix' => 'news&magazine'], function () {
         Route::get('/', [NewsAndMagazineController::class, 'index'])->name('news&magazine.index');
+        Route::get('/news-magazine-list', [NewsAndMagazineController::class, 'list'])->name('news&magazine.list');
+        Route::get('/get-data', [NewsAndMagazineController::class, 'getNewsData'])->name('news&magazine.getData');
+        Route::get('/add-news-magazine', [NewsAndMagazineController::class, 'addNews'])->name('news&magazine.add');
+        Route::post('/store', [NewsAndMagazineController::class, 'store'])->name('news&magazine.store');
+        Route::get('/{id}/edit', [NewsAndMagazineController::class, 'edit'])->name('news&magazine.edit');
+        Route::put('/{id}', [NewsAndMagazineController::class, 'update'])->name('news&magazine.update');
+        Route::delete('/{id}', [NewsAndMagazineController::class, 'destroy'])->name('news&magazine.destroy');
     });
 
     Route::group(['prefix' => 'OER'], function () {
         Route::get('/', [OERController::class, 'index'])->name('oer.index');
+        Route::get('/oer-list', [OERController::class, 'list'])->name('oer.list');
+        Route::get('/get-data', [OERController::class, 'getOerData'])->name('oer.getData');
+        Route::get('/add-oer', [OERController::class, 'addOer'])->name('oer.add');
+        Route::post('/store', [OERController::class, 'store'])->name('oer.store');
+        Route::get('/{id}/edit', [OERController::class, 'edit'])->name('oer.edit');
+        Route::put('/{id}', [OERController::class, 'update'])->name('oer.update');
+        Route::delete('/{id}', [OERController::class, 'destroy'])->name('oer.destroy');
     });
 });

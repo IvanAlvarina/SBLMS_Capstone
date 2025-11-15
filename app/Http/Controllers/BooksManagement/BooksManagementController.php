@@ -91,18 +91,10 @@ class BooksManagementController extends Controller
             return [
                 'book_id'       => $books->book_id,
                 'book_title'    => $books->book_title,
-                'book_author'   => $books->book_author,
                 'book_genre'    => $books->book_genre,
-                'book_location' => $books->book_location,
+                'dewey_number'  => $books->dewey_number,
+                'cutter_sanborn' => $books->cutter_sanborn,
                 'book_yearpub'  => $books->book_yearpub,
-                'book_isbn'     => $books->book_isbn,
-                'book_status'   => '<span class="badge ' .
-                    ($books->book_status === 'Borrowed' ? 'bg-label-danger' :
-                    ($books->book_status === 'Reserved' ? 'bg-label-warning' :
-                    ($books->book_status === 'Removed' ? 'bg-label-secondary' : 'bg-label-success'))) .
-                    '">' . e($books->book_status) . '</span>',
-                'book_cimage'   => $books->book_cimage,
-                'book_dateadded'=> $books->book_dateadded,
                 'action'        => '
                     <div class="dropdown">
                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -143,6 +135,8 @@ class BooksManagementController extends Controller
             'book_genre'    => 'nullable|string|max:255',
             'book_location' => 'required|string|max:255',
             'dewey_classification' => 'nullable|string|max:255',
+            'dewey_number' => 'nullable|string|max:255',
+            'cutter_sanborn' => 'nullable|string|max:255',
             'book_yearpub'  => 'nullable|date',
             'book_isbn'     => 'nullable|string|max:20',
             'book_status'   => 'required|in:Borrowed,Available,Reserved',
@@ -156,6 +150,8 @@ class BooksManagementController extends Controller
             $book->book_genre  = $request->book_genre;
             $book->book_location = $request->book_location;
             $book->dewey_classification = $request->dewey_classification;
+            $book->dewey_number = $request->dewey_number;
+            $book->cutter_sanborn = $request->cutter_sanborn;
             $book->book_yearpub= $request->book_yearpub;
             $book->book_isbn   = $request->book_isbn;
             $book->book_status = $request->book_status;
@@ -205,18 +201,24 @@ class BooksManagementController extends Controller
             'book_title'    => 'required|string|max:255',
             'book_author'   => 'required|string|max:255',
             'book_genre'    => 'nullable|string|max:255',
+            'book_location' => 'required|string|max:255',
             'book_yearpub'  => 'nullable|date_format:Y-m-d',
             'book_isbn'     => 'nullable|string|max:20',
             'book_status'   => 'required|in:Borrowed,Available,Reserved,Removed',
             'book_cimage'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'dewey_classification' => 'nullable|string|max:255',
+            'dewey_number' => 'nullable|string|max:255',
+            'cutter_sanborn' => 'nullable|string|max:255',
         ]);
 
         $book = BooksList::findOrFail($id);
         $book->book_title  = $request->book_title;
         $book->book_author = $request->book_author;
         $book->book_genre  = $request->book_genre;
+        $book->book_location = $request->book_location;
         $book->dewey_classification = $request->dewey_classification;
+        $book->dewey_number = $request->dewey_number;
+        $book->cutter_sanborn = $request->cutter_sanborn;
         $book->book_yearpub= $request->book_yearpub;
         $book->book_isbn   = $request->book_isbn;
         $book->book_status = $request->book_status;
@@ -282,6 +284,46 @@ class BooksManagementController extends Controller
         return view('BooksManagement.BooksIsbnScannerCreateView');
     }
 
+    // 📌 Get Next Dewey Number
+    public function getNextDeweyNumber(Request $request)
+    {
+        $classification = $request->query('classification');
+
+        if (!$classification) {
+            return response()->json(['error' => 'Classification required'], 400);
+        }
+
+        // Get the base number from classification (e.g., "000–099" -> "000")
+        $base = explode('–', $classification)[0];
+
+        // Find the highest existing Dewey number in this classification range
+        $existingNumbers = BooksList::where('dewey_classification', $classification)
+            ->whereNotNull('dewey_number')
+            ->pluck('dewey_number')
+            ->toArray();
+
+        $nextNumber = $base . '.01'; // Default starting number
+
+        if (!empty($existingNumbers)) {
+            // Extract numeric parts and find the highest
+            $maxNumber = 0;
+            foreach ($existingNumbers as $num) {
+                // Remove base and dot, get the decimal part
+                $parts = explode('.', $num);
+                if (count($parts) >= 2 && $parts[0] == $base) {
+                    $decimal = (int) $parts[1];
+                    if ($decimal > $maxNumber) {
+                        $maxNumber = $decimal;
+                    }
+                }
+            }
+            $nextDecimal = $maxNumber + 1;
+            $nextNumber = $base . '.' . str_pad($nextDecimal, 2, '0', STR_PAD_LEFT);
+        }
+
+        return response()->json(['next_number' => $nextNumber]);
+    }
+
     // 📌 Get Book Details for Modal
     public function details($id)
     {
@@ -294,6 +336,8 @@ class BooksManagementController extends Controller
             'book_genre' => $book->book_genre,
             'book_location' => $book->book_location,
             'dewey_classification' => $book->dewey_classification,
+            'dewey_number' => $book->dewey_number,
+            'cutter_sanborn' => $book->cutter_sanborn,
             'book_yearpub' => $book->book_yearpub,
             'book_isbn' => $book->book_isbn,
             'book_status' => $book->book_status,

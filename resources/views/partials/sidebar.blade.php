@@ -84,58 +84,64 @@
       </li>
 
       {{-- Digital Resources --}}
-
-      {{-- E Journal Management --}}
-      <li class="menu-item {{ request()->is('ejournals*') ? 'active open' : '' }}">
+      <li class="menu-item {{ request()->is('ejournals*') || request()->is('ebooks*') || request()->is('news&magazine*') || request()->is('OER*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <i class="menu-icon tf-icons ti ti-notebook"></i>
-          <div data-i18n="E-Journal Mgt.">E-Journal Mgt.</div>
+          <i class="menu-icon tf-icons ti ti-world"></i>
+          <div data-i18n="Add Digital Resources"> Add Digital Resources</div>
         </a>
         <ul class="menu-sub">
           <li class="menu-item {{ request()->routeIs('ejournals.list') ? 'active' : '' }}">
             <a href="{{ route('ejournals.list') }}" class="menu-link">
-              <div data-i18n="List">List</div>
+              <div data-i18n="E-Journals">E-Journals</div>
             </a>
           </li>
-          <li class="menu-item {{ request()->routeIs('ejournals.add') ? 'active' : '' }}">
-            <a href="{{ route('ejournals.add') }}" class="menu-link">
-              <div data-i18n="Add">Add</div>
+          <li class="menu-item {{ request()->routeIs('ebooks.list') ? 'active' : '' }}">
+            <a href="{{ route('ebooks.list') }}" class="menu-link">
+              <div data-i18n="E-Books">E-Books</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('news&magazine.list') ? 'active' : '' }}">
+            <a href="{{ route('news&magazine.list') }}" class="menu-link">
+              <div data-i18n="News & Magazine">News & Magazine</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('oer.list') ? 'active' : '' }}">
+            <a href="{{ route('oer.list') }}" class="menu-link">
+              <div data-i18n="OER">OER</div>
             </a>
           </li>
         </ul>
       </li>
     @endrole
 
-    {{-- Ejournals --}}
-    <li class="menu-item {{ request()->routeIs('ejournals.index') ? 'active open' : '' }}">
-      <a href="{{ route('ejournals.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-notebook"></i>
-        <div data-i18n="E-Journals">E-Journals</div>
+    {{-- Digital Resources --}}
+    <li class="menu-item {{ request()->is('ejournals*') || request()->is('ebooks*') || request()->is('news&magazine*') || request()->is('OER*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-world"></i>
+        <div data-i18n="List of Digital Resources">List of Digital Resources</div>
       </a>
-    </li>
-
-    {{-- Ebooks --}}
-    <li class="menu-item {{ request()->routeIs('ebooks.index') ? 'active open' : '' }}">
-      <a href="{{ route('ebooks.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-book"></i>
-        <div data-i18n="E-Books">E-Books</div>
-      </a>
-    </li>
-
-    {{-- News and magazine --}}
-    <li class="menu-item {{ request()->routeIs('news&magazine.index') ? 'active open' : '' }}">
-      <a href="{{ route('news&magazine.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-news"></i>
-        <div data-i18n="News & Magazine">News & Magazine</div>
-      </a>
-    </li>
-
-    {{-- OER --}}
-    <li class="menu-item {{ request()->routeIs('oer.index') ? 'active open' : '' }}">
-      <a href="{{ route('oer.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-school"></i>
-        <div data-i18n="OER">OER</div>
-      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('ejournals.index') ? 'active' : '' }}">
+          <a href="{{ route('ejournals.index') }}" class="menu-link">
+            <div data-i18n="E-Journals">E-Journals</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('ebooks.index') ? 'active' : '' }}">
+          <a href="{{ route('ebooks.index') }}" class="menu-link">
+            <div data-i18n="E-Books">E-Books</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('news&magazine.index') ? 'active' : '' }}">
+          <a href="{{ route('news&magazine.index') }}" class="menu-link">
+            <div data-i18n="News & Magazine">News & Magazine</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('oer.index') ? 'active' : '' }}">
+          <a href="{{ route('oer.index') }}" class="menu-link">
+            <div data-i18n="OER">OER</div>
+          </a>
+        </li>
+      </ul>
     </li>
 
     {{-- Browse books (Visible for all roles) --}}

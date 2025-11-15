@@ -58,7 +58,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="dewey_classification" class="form-label">Dewey Decimal Classification</label>
-                            <select name="dewey_classification" class="form-control">
+                            <select name="dewey_classification" id="dewey_classification" class="form-control">
                                 <option value="">Select Dewey Classification</option>
                                 <option value="000–099" {{ old('dewey_classification') == '000–099' ? 'selected' : '' }}>000–099: General Works</option>
                                 <option value="100–199" {{ old('dewey_classification') == '100–199' ? 'selected' : '' }}>100–199: Philosophy and Psychology</option>
@@ -74,13 +74,33 @@
                             @error('dewey_classification') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
+                            <label for="dewey_number" class="form-label">Dewey Number</label>
+                            <input type="text" name="dewey_number" id="dewey_number" class="form-control"
+                                   value="{{ old('dewey_number') }}" placeholder="e.g., 001.23" readonly>
+                            @error('dewey_number') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cutter_sanborn" class="form-label">Cutter-Sanborn</label>
+                            <input type="text" name="cutter_sanborn" id="cutter_sanborn" class="form-control"
+                                   value="{{ old('cutter_sanborn') }}" placeholder="e.g., A123">
+                            @error('cutter_sanborn') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Status</label>
                             <input type="hidden" name="book_status" value="Available">
                             <span class="form-control-plaintext text-success">Available</span>
                         </div>
                     </div>
-                    <input type="file" name="book_cimage" id="book_cimage" class="form-control" accept="image/*" style="display:none;">
-                    @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="book_cimage" class="form-label">Book Cover Image</label>
+                            <input type="file" name="book_cimage" id="book_cimage" class="form-control" accept="image/*">
+                            @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Right side: cover preview + OCR buttons -->
@@ -195,6 +215,101 @@ function preprocessImage(image) {
     return canvas;
 }
 
+// ===== Process OCR Text =====
+function processOCRText(text) {
+    let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+    // Filter out junk text
+    const junkPatterns = [
+        /^A Novel$/i,
+        /^Bestselling Author$/i,
+        /^New York Times Bestseller$/i,
+        /^Award-Winning$/i,
+        /^Paperback$/i,
+        /^Hardcover$/i,
+        /^Edition$/i,
+        /^Published by/i,
+        /^ISBN/i,
+        /^\d{4}$/, // Year
+        /^Page \d+$/i,
+        /^Chapter \d+$/i
+    ];
+    lines = lines.filter(line => !junkPatterns.some(pattern => pattern.test(line)));
+
+    // Detect "by Author" patterns
+    let title = '';
+    let author = '';
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const byMatch = line.match(/^(.+?)\s+by\s+(.+)$/i);
+        if (byMatch) {
+            title = byMatch[1].trim();
+            author = byMatch[2].trim();
+            lines.splice(i, 1);
+            break;
+        }
+    }
+
+    // Merge multi-line titles (consecutive lines that don't look like authors)
+    const mergedLines = [];
+    let currentMerge = '';
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (isLikelyTitle(line) && currentMerge && !isLikelyAuthor(line)) {
+            currentMerge += ' ' + line;
+        } else {
+            if (currentMerge) mergedLines.push(currentMerge);
+            currentMerge = line;
+        }
+    }
+    if (currentMerge) mergedLines.push(currentMerge);
+    lines = mergedLines;
+
+    // If no title/author from "by", assign based on heuristics
+    if (!title && !author) {
+        if (lines.length === 1) {
+            title = lines[0];
+        } else if (lines.length >= 2) {
+            // Sort by length, but check if shorter looks like name
+            const sorted = [...lines].sort((a, b) => b.length - a.length);
+            const longest = sorted[0];
+            const next = sorted[1];
+            if (isLikelyAuthor(next)) {
+                title = longest;
+                author = next;
+            } else {
+                // Check order: if first line is author-like, swap
+                if (isLikelyAuthor(lines[0])) {
+                    author = lines[0];
+                    title = lines.slice(1).join(' ');
+                } else {
+                    title = lines[0];
+                    author = lines.slice(1).join(' ');
+                }
+            }
+        }
+    }
+
+    // Clean up author (remove extra junk)
+    if (author) {
+        author = author.replace(/^(by\s+)?/i, '').trim();
+    }
+
+    return { title, author };
+}
+
+function isLikelyTitle(line) {
+    // Titles are longer, contain more words, less likely to be proper names
+    return line.length > 10 && line.split(' ').length > 1;
+}
+
+function isLikelyAuthor(line) {
+    // Authors: proper names, initials like J.K. Rowling, or short phrases
+    const authorRegex = /^[A-Z][a-z]+(\s+[A-Z][a-z]+)*(\s+[A-Z]\.\s*[A-Z]\.\s*[A-Z][a-z]+)?$/;
+    const initialRegex = /^[A-Z]\.\s*[A-Z]\.\s*[A-Z][a-z]+$/;
+    return authorRegex.test(line) || initialRegex.test(line) || line.split(' ').length <= 3;
+}
+
 // ===== Run OCR with Loading & Heuristic =====
 function runOCR(imageSource) {
     Swal.fire({
@@ -221,17 +336,10 @@ function runOCR(imageSource) {
             const detected = text.trim();
             document.getElementById('ocr-result').innerText = detected || "No text detected";
 
-            // Split lines
-            const lines = detected.split('\n').map(l => l.trim()).filter(Boolean);
+            const { title, author } = processOCRText(detected);
 
-            // Heuristic for title vs author
-            if(lines.length === 1){
-                document.getElementById('book_title').value = lines[0];
-            } else if(lines.length >= 2){
-                const sorted = [...lines].sort((a,b) => b.length - a.length); // longest line = title
-                document.getElementById('book_title').value = sorted[0];
-                document.getElementById('book_author').value = sorted[1];
-            }
+            document.getElementById('book_title').value = title;
+            document.getElementById('book_author').value = author;
         })
         .catch(err => {
             console.error('OCR failed:', err);
@@ -308,6 +416,38 @@ document.getElementById('capture-btn').addEventListener('click', () => {
         fileInput.files = dataTransfer.files;
         updateCoverPreview(file);
     });
+});
+
+// Auto-generate Dewey Number based on classification
+document.getElementById('dewey_classification').addEventListener('change', function() {
+    const classification = this.value;
+    const numberField = document.getElementById('dewey_number');
+
+    if (classification) {
+        // Get the base number from classification (e.g., "000–099" -> "000")
+        const base = classification.split('–')[0];
+
+        // Find the next available number in this range
+        fetch('/books-management/get-next-dewey-number?classification=' + encodeURIComponent(classification))
+            .then(response => response.json())
+            .then(data => {
+                if (data.next_number) {
+                    numberField.value = data.next_number;
+                } else {
+                    // Fallback: generate a simple incremented number
+                    const randomSuffix = Math.floor(Math.random() * 100) + 1;
+                    numberField.value = base + '.' + randomSuffix.toString().padStart(2, '0');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching next Dewey number:', error);
+                // Fallback
+                const randomSuffix = Math.floor(Math.random() * 100) + 1;
+                numberField.value = base + '.' + randomSuffix.toString().padStart(2, '0');
+            });
+    } else {
+        numberField.value = '';
+    }
 });
 
 // ===== Notifications =====

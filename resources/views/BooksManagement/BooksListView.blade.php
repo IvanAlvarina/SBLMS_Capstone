@@ -66,10 +66,11 @@
     <table class="datatables-basic table">
         <thead>
             <tr>
-                <th>Book ID</th>
                 <th>Book Title</th>
-                <th>Book Genre</th>
-                <th>Book Status</th>
+                <th>Genre</th>
+                <th>Dewey Specific No.</th>
+                <th>Cutter-Sanborn</th>
+                <th>Year Published</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -185,10 +186,11 @@ $(function () {
                 }
             },
             columns: [
-                { data: 'book_id', className: 'text-center', width: '80px' },
                 { data: 'book_title', width: '300px' },
                 { data: 'book_genre', width: '150px' },
-                { data: 'book_status', className: 'text-center', width: '120px' },
+                { data: 'dewey_number', width: '150px' },
+                { data: 'cutter_sanborn', width: '150px' },
+                { data: 'book_yearpub', width: '120px' },
                 {
                     data: null,
                     orderable: false,

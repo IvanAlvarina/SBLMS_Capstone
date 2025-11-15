@@ -33,36 +33,6 @@
                             @error('book_genre') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="book_location" class="form-label">Location</label>
-                            <select name="book_location" class="form-control" required>
-                                <option value="">Select Location</option>
-                                <option value="Elementary" {{ old('book_location') == 'Elementary' ? 'selected' : '' }}>Elementary</option>
-                                <option value="High School" {{ old('book_location') == 'High School' ? 'selected' : '' }}>High School</option>
-                                <option value="Senior High School" {{ old('book_location') == 'Senior High School' ? 'selected' : '' }}>Senior High School</option>
-                                <option value="College" {{ old('book_location') == 'College' ? 'selected' : '' }}>College</option>
-                            </select>
-                            @error('book_location') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="dewey_classification" class="form-label">Dewey Decimal Classification</label>
-                            <select name="dewey_classification" class="form-control">
-                                <option value="">Select Dewey Classification</option>
-                                <option value="000–099" {{ old('dewey_classification') == '000–099' ? 'selected' : '' }}>000–099: General Works</option>
-                                <option value="100–199" {{ old('dewey_classification') == '100–199' ? 'selected' : '' }}>100–199: Philosophy and Psychology</option>
-                                <option value="200–299" {{ old('dewey_classification') == '200–299' ? 'selected' : '' }}>200–299: Religion</option>
-                                <option value="300–399" {{ old('dewey_classification') == '300–399' ? 'selected' : '' }}>300–399: Social Sciences</option>
-                                <option value="400–499" {{ old('dewey_classification') == '400–499' ? 'selected' : '' }}>400–499: Language</option>
-                                <option value="500–599" {{ old('dewey_classification') == '500–599' ? 'selected' : '' }}>500–599: Natural Sciences and Mathematics</option>
-                                <option value="600–699" {{ old('dewey_classification') == '600–699' ? 'selected' : '' }}>600–699: Technology (Applied Sciences)</option>
-                                <option value="700–799" {{ old('dewey_classification') == '700–799' ? 'selected' : '' }}>700–799: The Arts</option>
-                                <option value="800–899" {{ old('dewey_classification') == '800–899' ? 'selected' : '' }}>800–899: Literature and Rhetoric</option>
-                                <option value="900–999" {{ old('dewey_classification') == '900–999' ? 'selected' : '' }}>900–999: Geography and History</option>
-                            </select>
-                            @error('dewey_classification') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <label for="book_yearpub" class="form-label">Date Published</label>
                             <input type="date" name="book_yearpub" class="form-control"
                                    value="{{ old('book_yearpub') }}"
@@ -80,13 +50,62 @@
                             @error('book_isbn') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
+                            <label for="book_location" class="form-label">Location</label>
+                            <select name="book_location" class="form-control" required>
+                                <option value="">Select Location</option>
+                                <option value="Elementary" {{ old('book_location') == 'Elementary' ? 'selected' : '' }}>Elementary</option>
+                                <option value="High School" {{ old('book_location') == 'High School' ? 'selected' : '' }}>High School</option>
+                                <option value="Senior High School" {{ old('book_location') == 'Senior High School' ? 'selected' : '' }}>Senior High School</option>
+                                <option value="College" {{ old('book_location') == 'College' ? 'selected' : '' }}>College</option>
+                            </select>
+                            @error('book_location') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dewey_classification" class="form-label">Dewey Decimal Classification</label>
+                            <select name="dewey_classification" id="dewey_classification" class="form-control">
+                                <option value="">Select Dewey Classification</option>
+                                <option value="000–099" {{ old('dewey_classification') == '000–099' ? 'selected' : '' }}>000–099: General Works</option>
+                                <option value="100–199" {{ old('dewey_classification') == '100–199' ? 'selected' : '' }}>100–199: Philosophy and Psychology</option>
+                                <option value="200–299" {{ old('dewey_classification') == '200–299' ? 'selected' : '' }}>200–299: Religion</option>
+                                <option value="300–399" {{ old('dewey_classification') == '300–399' ? 'selected' : '' }}>300–399: Social Sciences</option>
+                                <option value="400–499" {{ old('dewey_classification') == '400–499' ? 'selected' : '' }}>400–499: Language</option>
+                                <option value="500–599" {{ old('dewey_classification') == '500–599' ? 'selected' : '' }}>500–599: Natural Sciences and Mathematics</option>
+                                <option value="600–699" {{ old('dewey_classification') == '600–699' ? 'selected' : '' }}>600–699: Technology (Applied Sciences)</option>
+                                <option value="700–799" {{ old('dewey_classification') == '700–799' ? 'selected' : '' }}>700–799: The Arts</option>
+                                <option value="800–899" {{ old('dewey_classification') == '800–899' ? 'selected' : '' }}>800–899: Literature and Rhetoric</option>
+                                <option value="900–999" {{ old('dewey_classification') == '900–999' ? 'selected' : '' }}>900–999: Geography and History</option>
+                            </select>
+                            @error('dewey_classification') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dewey_number" class="form-label">Dewey Number</label>
+                            <input type="text" name="dewey_number" id="dewey_number" class="form-control"
+                                   value="{{ old('dewey_number') }}" placeholder="e.g., 001.23" readonly>
+                            @error('dewey_number') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cutter_sanborn" class="form-label">Cutter-Sanborn</label>
+                            <input type="text" name="cutter_sanborn" id="cutter_sanborn" class="form-control"
+                                   value="{{ old('cutter_sanborn') }}" placeholder="e.g., A123">
+                            @error('cutter_sanborn') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Status</label>
                             <input type="hidden" name="book_status" value="Available">
                             <span class="form-control-plaintext text-success">Available</span>
                         </div>
                     </div>
-                    <input type="file" name="book_cimage" class="form-control" accept="image/*" style="display:none;">
-                    @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="book_cimage" class="form-label">Book Cover Image</label>
+                            <input type="file" name="book_cimage" id="book_cimage" class="form-control" accept="image/*">
+                            @error('book_cimage') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right side: cover preview -->
@@ -148,7 +167,7 @@ document.getElementById('create-book-form').addEventListener('submit', function(
 });
 
 // Live preview of uploaded image
-document.querySelector('input[name="book_cimage"]').addEventListener('change', function(event) {
+document.getElementById('book_cimage').addEventListener('change', function(event) {
     const file = event.target.files[0];
     const preview = document.getElementById('cover-preview');
     const placeholder = document.getElementById('cover-placeholder');
@@ -177,6 +196,38 @@ window.addEventListener('DOMContentLoaded', () => {
     if (isbn) document.getElementById('book_isbn').value = formatISBN(isbn);
     if (title) document.querySelector('input[name="book_title"]').value = decodeURIComponent(title);
     if (author) document.querySelector('input[name="book_author"]').value = decodeURIComponent(author);
+});
+
+// Auto-generate Dewey Number based on classification
+document.getElementById('dewey_classification').addEventListener('change', function() {
+    const classification = this.value;
+    const numberField = document.getElementById('dewey_number');
+
+    if (classification) {
+        // Get the base number from classification (e.g., "000–099" -> "000")
+        const base = classification.split('–')[0];
+
+        // Find the next available number in this range
+        fetch('/books-management/get-next-dewey-number?classification=' + encodeURIComponent(classification))
+            .then(response => response.json())
+            .then(data => {
+                if (data.next_number) {
+                    numberField.value = data.next_number;
+                } else {
+                    // Fallback: generate a simple incremented number
+                    const randomSuffix = Math.floor(Math.random() * 100) + 1;
+                    numberField.value = base + '.' + randomSuffix.toString().padStart(2, '0');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching next Dewey number:', error);
+                // Fallback
+                const randomSuffix = Math.floor(Math.random() * 100) + 1;
+                numberField.value = base + '.' + randomSuffix.toString().padStart(2, '0');
+            });
+    } else {
+        numberField.value = '';
+    }
 });
 
 // Success notification
