@@ -5,73 +5,86 @@
 @section('content')
 
     <style>
-        /* ✅ Make left side act like wallpaper */
-        .auth-cover-bg {
-            position: relative;
-            width: 100%;
-            height: 100vh; /* full viewport height */
-            overflow: hidden;
+        /* 2-panel login page styles */
+        .left-panel {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
         }
-
-        #authCarousel,
-        #authCarousel .carousel-inner,
-        #authCarousel .carousel-item {
-            height: 100%;
+        .right-panel {
+            background-color: #0260A8;
+            display: flex;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
         }
-
-        #authCarousel img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* fill + crop wallpaper style */
+        .welcome-message {
+            text-align: center;
+            color: #000000ff;
+        }
+        .logo-image {
+            max-width: 500px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        .welcome-message h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .welcome-message p {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+        .btn-primary {
+            background-color: white !important;
+            border-color: white !important;
+            color: #0260A8 !important;
+        }
+        .btn-primary:hover {
+            background-color: #f8f9fa !important;
+            border-color: #f8f9fa !important;
+            color: #0260A8 !important;
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .form-label {
+            color: white;
+        }
+        .text-center a {
+            color: white;
+        }
+        .text-center a:hover {
+            color: #f8f9fa;
+        }
+        @media (max-width: 991.98px) {
+            .left-panel, .right-panel {
+                min-height: auto;
+                padding: 1rem;
+            }
+            .welcome-message h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 
-    <!-- Left Side Image Carousel -->
-    <div class="d-none d-lg-flex col-lg-7 p-0">
-        <div class="auth-cover-bg auth-cover-bg-color w-100">
-            <div id="authCarousel" class="carousel slide carousel-fade w-100 h-100"
-                 data-bs-ride="carousel" data-bs-interval="4000">
-                
-                <div class="carousel-inner h-100">
-                   <div class="carousel-item active">
-                        <img src="{{ asset('assets/bgpicture/wallpaper.jpg') }}" alt="Slide 1">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/bgpicture/wallpaper2.jpg') }}" alt="Slide 2">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/bgpicture/wallpaper3.jpg') }}" alt="Slide 3">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/bgpicture/wallpaper4.jpg') }}" alt="Slide 4">
-                    </div>
 
-                </div>
 
-                <!-- Controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#authCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#authCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-
-                <!-- Indicators -->
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#authCarousel" data-bs-slide-to="0" class="active"></button>
-                    <button type="button" data-bs-target="#authCarousel" data-bs-slide-to="1"></button>
-                    <button type="button" data-bs-target="#authCarousel" data-bs-slide-to="2"></button>
-                    <button type="button" data-bs-target="#authCarousel" data-bs-slide-to="3"></button>
-                </div>
-
-            </div>
+    <!-- Left Panel -->
+    <div class="d-none d-lg-flex col-lg-7 left-panel">
+        <div class="welcome-message">
+            <img src="{{ asset('logo.webp') }}" alt="SBLMS Logo" class="logo-image">
+            <h1>Welcome to SBLMS</h1>
+            <p>Your gateway to knowledge and learning resources.</p>
+            <p>Please sign-in to your account</p>
         </div>
     </div>
 
-    <!-- Login Form -->
-    <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
+    <!-- Right Panel -->
+    <div class="d-flex col-12 col-lg-5 right-panel">
         <div class="w-px-400 mx-auto">
             <!-- Logo -->
             <div class="app-brand mb-4">
@@ -80,8 +93,8 @@
                 </a>
             </div>
 
-            <h4 class="mb-1">Welcome to SBLMS👋</h4>
-            <p class="mb-4">Please sign-in to your account</p>
+            <h4 class="mb-1"></h4>
+            <p class="mb-4"></p>
 
             {{-- Success Notification --}}
             @if(session('success'))

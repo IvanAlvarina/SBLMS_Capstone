@@ -60,7 +60,7 @@
         <ul class="menu-sub">
           <li class="menu-item {{ request()->routeIs('books-management.index') ? 'active' : '' }}">
             <a href="{{ route('books-management.index') }}" class="menu-link">
-              <div data-i18n="Books List">Books List</div>
+              <div data-i18n="Collection">Collection</div>
             </a>
           </li>
 
