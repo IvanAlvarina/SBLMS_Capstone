@@ -72,6 +72,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary mt-3">Update Book</button>
+            <a href="{{ route('books-management.index') }}" class="btn btn-secondary mt-3">Cancel</a>
         </form>
     </div>
 </div>
